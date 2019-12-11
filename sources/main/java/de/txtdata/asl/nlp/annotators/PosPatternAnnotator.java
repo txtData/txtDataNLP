@@ -19,10 +19,8 @@
 package de.txtdata.asl.nlp.annotators;
 
 import de.txtdata.asl.nlp.annotations.Annotation;
-import de.txtData.asl.nlp.models.*;
 import de.txtdata.asl.util.dataStructures.RecursiveDictionary;
 import de.txtdata.asl.util.misc.AslException;
-import de.txtFata.asl.nlp.models.*;
 import de.txtdata.asl.nlp.models.*;
 
 import java.util.ArrayList;
