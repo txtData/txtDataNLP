@@ -1,20 +1,32 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
-
+/*
+ *  Copyright 2013-2019 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 package de.txtData.asl.util.dataStructures;
 
 import java.io.Serializable;
 import java.util.*;
 
 /**
- * Data structure that keeps counts of things.
- * Each time an item is added, it is checked whether this item was added before. If not, it is added with count 1,
- * if yes, this item's count is increased by 1.
+ * Data structure to keeps counts (or scores) of entities.
+ * Each time an item is added, it is checked whether this item was added before.
+ * If not, it is added with count 1.0; if yes, this items' count is increased by 1.0.
+ * This class is also useful for various ranking, scoring and sorting tasks.
  *
- * This class is also useful for various ranking and scoring tasks.
- *
- * @param <T> The thing you want to count.
+ * @param <T> The entity that should be counted.
  */
 public class Bag<T> implements Serializable{
 
@@ -40,17 +52,14 @@ public class Bag<T> implements Serializable{
     }
 
 	/**
-	 * Returns a shallow copy of this bag.
-	 * @return A shallow copy of this bag.
+	 * Copy constructor.
 	 */
-    public Bag<T> clone(){
-        Bag<T> clone = new Bag<>();
-        if (this.hashMap instanceof LinkedHashMap){
-            clone.hashMap = new LinkedHashMap<>(this.hashMap);
+    public Bag(Bag old){
+        if (old.hashMap instanceof LinkedHashMap){
+            this.hashMap = new LinkedHashMap<>(old.hashMap);
         }else{
-            clone.hashMap = new HashMap<>(this.hashMap);
+            this.hashMap = new HashMap<>(old.hashMap);
         }
-        return clone;
     }
 
     /**
@@ -89,10 +98,10 @@ public class Bag<T> implements Serializable{
 	 * Multiplies the key's value with <code>modifier</code>.
 	 * If the bag does not contain key, no action is taken.
 	 */
-	public void modify(T key, double modifier){
+	public void multiply(T key, double multiplier){
         if (hashMap.containsKey(key)){
             double d = hashMap.get(key);
-            d *= modifier;
+            d *= multiplier;
             hashMap.put(key, d);
         }
     }
@@ -102,26 +111,24 @@ public class Bag<T> implements Serializable{
 	 * @param bag The bag that should be added.
 	 * @return This bag.
 	 */
-	public Bag addBag(Bag<T> bag){
-		for (T key : bag.keys()) {
+	public void addBag(Bag<T> bag){
+		for (T key : bag.keySet()) {
         	double value = bag.getValue(key);
         	this.add(key, value);
      	}
-        return this;
 	}
 
 	/**
 	 * Add the contents of another bag to this bag
 	 * @param bag The bag that should be added.
-	 * @param weightModificator The values of bay will be multiplied with this value before they are added.
+	 * @param weightMultiplier The values of bag will be multiplied with this value before they are added.
 	 * @return This bag.
 	 */
-	public Bag addBag(Bag<T> bag, double weightModificator){
-        for (T key : bag.keys()){
-        	double value = bag.getValue(key)*weightModificator;
+	public void addBag(Bag<T> bag, double weightMultiplier){
+        for (T key : bag.keySet()){
+        	double value = bag.getValue(key)*weightMultiplier;
         	this.add(key,value);
      	}
-        return this;
 	}
 
 	/**
@@ -137,19 +144,17 @@ public class Bag<T> implements Serializable{
 	/**
 	 * Add the contents of a list.
 	 * @param list The list that should be added.
-	 * @param value The list entries will be added with this value.
+	 * @param value The list questions will be added with this value.
 	 */
-	public Bag<T> addList(List<T> list, double value){
+	public void addList(List<T> list, double value){
         for (T item : list) {
         	this.add(item, value);
      	}
-        return this;
 	}
 
-
 	/**
-	 * Returns the number of entries in the bag. Note that entries with score 0 will also be counted.
-	 * @return The number of entries in the bag.
+	 * Returns the number of keys in the bag. Note that keys with value 0 will also be counted.
+	 * @return The number of keys in the bag.
 	 */
     public int size(){
         return this.hashMap.size();
@@ -157,7 +162,7 @@ public class Bag<T> implements Serializable{
 
 	/**
 	 * Returns true if this bag has no entries.
-	 * @return True if this bag has no entries.
+	 * @return True if this bag has no qntries.
 	 */
     public boolean isEmpty(){
         return this.hashMap.isEmpty();
@@ -171,7 +176,7 @@ public class Bag<T> implements Serializable{
     }
 
     /**
-     * Returns the key in this bag  that equals the specified key.
+     * Returns the key in this bag that equals the specified key.
      */
     public T getEqualKey(T key){
         if (!this.hashMap.containsKey(key)) return null;
@@ -182,7 +187,6 @@ public class Bag<T> implements Serializable{
         }
         return null;
     }
-
 
     /**
      * Returns the value for the specified key.
@@ -195,30 +199,35 @@ public class Bag<T> implements Serializable{
 		return d;
 	}
 
-    /**
-     * Returns a set representation of all keys in this bag.
-     */
-    public Set<T> keys(){
-        return this.hashMap.keySet();
-    }
-
-    /**
-     * Returns the sum of all values for all keys currently in the bag.
-     */
+	/**
+	 * Returns the sum of all values for all keys currently in the bag.
+	 */
 	public double getValueSum(){
 		double result=0;
-        for (T key : this.keys()) {
-            if (hashMap.get(key)!=null) {
-                double d = hashMap.get(key);
-                result = result + d;
-            }
+		for (T key : this.keySet()) {
+			if (hashMap.get(key)!=null) {
+				double d = hashMap.get(key);
+				result = result + d;
+			}
 		}
 		return result;
 	}
 
+    /**
+     * Returns a set representation of all keys in this bag.
+     */
+    public Set<T> keySet(){
+        return this.hashMap.keySet();
+    }
+
+
+    public ArrayList<T> getKeysAsList(){
+		return new ArrayList<T>(this.hashMap.keySet());
+	}
+
 	/**
-	 * Returns teh entries as a sorted list, highest first.
-     * Note that behavior for NaN is somewhat unspecific, NaNs might end up at the top of the list.
+	 * Returns the questions as a sorted list, highest first.
+     * Note that behavior for NaN is undefined, NaNs might end up at the top of the list.
 	 */
 	public List<T> getAsSortedList(){
 		List<T> results = new ArrayList<>();
@@ -234,7 +243,7 @@ public class Bag<T> implements Serializable{
      */
 	public TreeMap<Double,List<T>> getSorted(){
 		TreeMap<Double,List<T>> treeMap = new TreeMap<>();
-		for (T key : this.keys()) {
+		for (T key : this.keySet()) {
 			Double value = hashMap.get(key);
             if (value==null) {
                 // do nothing.
@@ -254,10 +263,10 @@ public class Bag<T> implements Serializable{
      * Returns the highest value currently present in the bag.
      */
 	public double getHighestValue(){
-		double highestSoFar=-1;
-        for (T key : this.keys()) {
+		Double highestSoFar = null;
+        for (T key : this.keySet()) {
             double d= hashMap.get(key);
-            if (d>=highestSoFar)
+            if (highestSoFar==null || d>=highestSoFar)
             	highestSoFar=d;
 		}
 		return highestSoFar;
@@ -277,7 +286,7 @@ public class Bag<T> implements Serializable{
 	public List<T> getKeysForHighestValue(boolean removeKeys){
 		ArrayList<T> results = new ArrayList<>();
 		Double highestSoFar = null;
-		for (T key : this.keys()) {
+		for (T key : this.keySet()) {
             double d = hashMap.get(key);
             if (highestSoFar==null || d>highestSoFar){
             	results = new ArrayList<>();
@@ -289,7 +298,7 @@ public class Bag<T> implements Serializable{
 		}
         if (results.size()==0 && this.size()>0){
             // e.g. NaN Values
-            results.addAll(this.keys());
+            results.addAll(this.keySet());
         }
 		if (removeKeys){
 			for (T key: results){
@@ -304,7 +313,7 @@ public class Bag<T> implements Serializable{
      */
 	public double getLowestValue(){
 		Double lowestSoFar = null;
-        for (T key : this.keys()) {
+        for (T key : this.keySet()) {
             double d = hashMap.get(key);
             if (lowestSoFar==null || lowestSoFar>d)
             	lowestSoFar=d;
@@ -317,7 +326,7 @@ public class Bag<T> implements Serializable{
 	}
 
     /**
-     * Returns the key that has the highest value, or more than one key if several keys with that value exist.
+     * Returns the key that has the lowest value, or more than one key if several keys with that value exist.
      */
 	public List<T> getKeysForLowestValue(){
 		return getKeysForLowestValue(false);
@@ -330,7 +339,7 @@ public class Bag<T> implements Serializable{
 	public List<T> getKeysForLowestValue(boolean removeKeys){
 		List<T> results = new ArrayList<>();
 		Double lowestSoFar = null;
-        for (T key : this.keys()){
+        for (T key : this.keySet()){
             double d = hashMap.get(key);
             if (lowestSoFar==null || lowestSoFar>d){
             	results = new ArrayList<>();
@@ -350,11 +359,11 @@ public class Bag<T> implements Serializable{
 
 	/**
 	 * Returns a list of the keys with the highest values. Its size will be x, or higher.
-	 * (if key x has value y, and other keys with value y exist, they will also be added.)
+	 * (If key x has value y, and other keys with value y exist, they will also be added.)
 	 */
 	public List<T> getTopXKeysAsList(int x){
 		List<T> results = new ArrayList<>();
-		Bag<T> bag = this.clone();
+		Bag<T> bag = new Bag<>(this);
 		while(results.size()<x && bag.hashMap.size()>0){
 			List<T> highest = bag.getKeysForHighestValue(true);
 			results.addAll(highest);
@@ -364,11 +373,11 @@ public class Bag<T> implements Serializable{
 
 	/**
 	 * Returns a list of the keys with the highest values. Its size will be x, or higher.
-	 * (if key x has value y, and other keys with value y exist, they will also be added.)
+	 * (If key x has value y, and other keys with value y exist, they will also be added.)
 	 */
 	public Bag<T> getTopXKeysAsBag(int x){
 		Bag<T> results = new Bag<>();
-		Bag<T> bag = this.clone();
+		Bag<T> bag = new Bag<>(this);
 		while(results.hashMap.size()<x && bag.hashMap.size()>0){
 			double highestValue = bag.getHighestValue();
 			List<T> highestKeys = bag.getKeysForHighestValue(true);
@@ -398,14 +407,14 @@ public class Bag<T> implements Serializable{
 			normalizer = thisSum / otherSum;
 		}
 
-        for (T key : this.keys()) {
+        for (T key : this.keySet()) {
             double thisValue  = this.getValue(key);
             double otherValue = bag.getValue(key);
             double newValue   = thisValue - otherValue * normalizer;
             hashMap.put(key, newValue);
         }
 
-        for (T key : bag.keys()) {
+        for (T key : bag.keySet()) {
             double otherValue = bag.getValue(key);
             if (!hashMap.containsKey(key)){
                 hashMap.put(key, 0.0 - (otherValue * normalizer));
@@ -414,12 +423,12 @@ public class Bag<T> implements Serializable{
     }
 
     /**
-     * Multiplies each value for all keys with the specified value.
+     * Multiplies each value for all keys in this bag with the specified value.
      * @param multiplier
      */
 	public void multiplyWeights(double multiplier){
-        Bag<T> bag = this.clone();
-        for (T key : bag.keys()) {
+        Bag<T> bag = new Bag<>(this);
+        for (T key : bag.keySet()) {
         	double value = this.getValue(key) * multiplier;
             hashMap.remove(key);
             hashMap.put(key,value);
@@ -441,13 +450,12 @@ public class Bag<T> implements Serializable{
     }
 
     /**
-     * Removes all entries on the specified list from this bag.
+     * Removes all keys in the specified list from this bag.
      */
-    public Bag<T> removeList(List<T> list){
+    public void removeList(List<T> list){
         for (T item: list) {
             hashMap.remove(item);
         }
-        return this;
     }
 
     /**
@@ -455,7 +463,7 @@ public class Bag<T> implements Serializable{
      */
 	public void removeValuesLessOrEqualThan(double d){
         List<T> toRemove = new ArrayList<>();
-        for (T key : this.keys()) {
+        for (T key : this.keySet()) {
         	double value = this.getValue(key);
         	if (d>=value) toRemove.add(key);
      	}
@@ -469,7 +477,7 @@ public class Bag<T> implements Serializable{
      */
 	public void removeValuesLessThan(double d){
         List<T> toRemove = new ArrayList<>();
-        for (T key : this.keys()) {
+        for (T key : this.keySet()) {
             double value = this.getValue(key);
             if (d>value) toRemove.add(key);
         }
@@ -483,7 +491,7 @@ public class Bag<T> implements Serializable{
      */
     public void clean(){
         List<T> toRemove = new ArrayList<>();
-        for (T key : this.keys()) {
+        for (T key : this.keySet()) {
             double value = this.getValue(key);
             if (0.0==value || Double.isNaN(value)){
                 toRemove.add(key);
@@ -494,33 +502,15 @@ public class Bag<T> implements Serializable{
         }
     }
 
-	public String getOnlyKey() {
-		String result = "";
-		List<T> list = this.getAsSortedList();
-		for (T key : list) {
-			result = result + key + ", ";
-			break;
-		}
-		if (result.length()>2){
-			result = result.substring(0,result.length() - 2);
-		}
-		if (list.size()==0){
-			result = "";
-		}
-		if (list.size()>10){
-			int more = list.size() - 10;
-			result = result + " ... plus " + more + " more.";
-		}
-		return result;
-	}
-
-	public String toString(){
+	private String toString_internal(boolean keysOnly){
         String result = "";
         List<T> list = this.getAsSortedList();
         int i = 1;
         for (T key : list) {
             double value = this.getValue(key);
-            result = result + key + ":" + value + ", ";
+            result = result + key;
+            if (!keysOnly) result = result + ":" + value;
+            result = result + ", ";
             if (i>=10) break;
             i++;
         }
@@ -537,11 +527,23 @@ public class Bag<T> implements Serializable{
         return result;
 	}
 
+	public String toString(){
+		return this.toString_internal(false);
+	}
+
+	public String toStringKeysOnly() {
+		return this.toString_internal(true);
+	}
+
 	public String toString(String indent){
-		return this.toString(0.0, false, indent);
+		return this.toString(indent, true, 0.0);
+	}
+
+	public String toString(boolean combineLines){
+		return this.toString("", combineLines, 0.0);
 	}
 	
-	public String toString(double ignoreLessThan, boolean combineLines, String indent){
+	public String toString(String indent, boolean combineLines, double ignoreLessThan){
 		String result = "";
 		TreeMap<Double, List<T>> tm = this.getSorted();
         while (tm.size()>0){
@@ -583,30 +585,14 @@ public class Bag<T> implements Serializable{
         return result;
 	}
 
-	public void printSorted(double ignoreLessThan){
-		printSorted(ignoreLessThan, true);
-	}
-
-	public void printSorted(double ignoreLessThan, boolean combineLines){
-		printSorted(ignoreLessThan, combineLines, "");
-	}
-	
-	public void printSorted(double ignoreLessThan, boolean combineLines, String indent){
-		System.out.print(this.toString(ignoreLessThan, combineLines, indent));
-	}
-
-	public void printSorted(String caption){
-		this.printSorted(caption, true);
-	}
-
-	public void printSorted(String caption, boolean combineLines){
-		System.out.println("  "+caption);
+	public String toString(String caption, String indent, boolean combineLines, double ignoreLessThan){
+		String result = indent+caption+"\n";
      	if (!hashMap.isEmpty()){
-        	this.printSorted(0, combineLines, "    ");
+     		result += this.toString(indent, combineLines,ignoreLessThan)+"\n";
         }else{
-            System.out.println("    No results.");
+     		result += indent+"  No results.\n";
         }
-        System.out.println("\n");
+     	return	result;
 	}
 
 }

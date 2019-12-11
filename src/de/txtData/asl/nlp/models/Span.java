@@ -1,14 +1,26 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
+/*
+ *  Copyright 2013-2018 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 
 package de.txtData.asl.nlp.models;
 
-import java.lang.Math;
-
 /*
  * Representation for a region in a text.
- * Please note: A Span has no meaning attached to it. If a text span has a meaning, it becomes an annotation.
+ * Please note: A Span has no meaning attached to it. If a text span is supposed to carry meaning, use annotation.
  */
 public class Span{
     public String surface;
@@ -26,10 +38,7 @@ public class Span{
     }
 
     public boolean contains(Span s){
-        if (s.starts>=this.starts && s.ends<=this.ends){
-            return true;
-        }
-        return false;
+        return (s.starts>=this.starts && s.ends<=this.ends);
     }
 
     public int getLength(){
@@ -50,25 +59,18 @@ public class Span{
 
     /**
     *
-    * @param s
-    * @return Please note that the 'text' field will always be null;
+    * @param s another span.
+    * @return A new span. Please note that the 'text' field will always be null;
     */
     public Span subsume(Span s){
         Span result = new Span(null, this.starts, this.ends);
         if (s==null) return result;
-
-        if (result.starts==-1){
-            result.starts = s.starts;
-        }else if (result.starts>s.starts && s.starts!=-1){
+        if (result.starts==-1 || result.starts>s.starts && s.starts!=-1){
             result.starts = s.starts;
         }
-
-        if (result.ends==-1){
-            result.ends = s.ends;
-        }else if (result.ends<s.ends && s.ends!=-1){
+        if (result.ends==-1 || result.ends<s.ends && s.ends!=-1){
             result.ends = s.ends;
         }
-
         return result;
     }
 
@@ -82,33 +84,20 @@ public class Span{
                 ||(this.starts<s.starts && this.ends>=s.ends)
                 )return true;
         if (!orEquals) return false;
-        if (this.starts<=s.starts && this.ends>=s.ends) return true;
-        return false;
+        return (this.starts<=s.starts && this.ends>=s.ends);
     }
 
     public boolean hasSamePositions(Span s){
-        if (this.starts==s.starts && this.ends==s.ends) return true;
-        return false;
+        return (this.starts==s.starts && this.ends==s.ends);
     }
 
     public boolean somehowOverlaps(Span other){
         int differeceTo = this.differenceTo(other);
-        if (differeceTo<=0) return true;
-        return false;
+        return (differeceTo<=0);
     }
 
-    /*public boolean crosses(Span other){
-        if (this.starts>=other.starts){
-            if (this.starts<=other.ends) return true;
-        }else{
-            if (this.ends>=other.starts) return true;
-        }
-        return false;
-    }*/
-
     public boolean contains(int index){
-        if (this.starts<=index && this.ends>=index) return true;
-        return false;
+        return (this.starts<=index && this.ends>=index);
     }
 
     @Override

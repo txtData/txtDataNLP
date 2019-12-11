@@ -1,20 +1,34 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
+/*
+ *  Copyright 2013-2018 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 
 package de.txtData.asl.nlp.models;
 
 import de.txtData.asl.nlp.annotations.IAnnotationObject;
-import de.txtData.asl.util.dataStructures.Dictionary;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * Representation of an entry in a dictionary.
- * Implements IAnnotationObject, so that text pieces can be marked with the dictionary entries that they match.
+ * Implements IAnnotationObject, so that text pieces can be marked with the dictionary questions that they match.
  */
-public class DictionaryEntry implements IAnnotationObject{
+public class DictionaryEntry implements IAnnotationObject {
 
     public String surface;
     public String type;
@@ -23,6 +37,16 @@ public class DictionaryEntry implements IAnnotationObject{
     public DictionaryEntry(String surface, String type){
         this.surface = surface;
         this.type = type;
+    }
+
+    public void addTag(String tag){
+        if (this.tags==null) this.tags = new ArrayList<>();
+        this.tags.add(tag);
+    }
+
+    public String getFirstTag(){
+        if (this.tags==null || this.tags.isEmpty()) return null;
+        return this.tags.get(0);
     }
 
     public static boolean hasTag(IAnnotationObject iAnnotationObject, String tag){
@@ -49,7 +73,7 @@ public class DictionaryEntry implements IAnnotationObject{
         if(this.surface!=null) {
             sb.append(" '").append(this.surface).append("'");
         }
-        if (!this.tags.isEmpty()){
+        if (this.tags!=null && !this.tags.isEmpty()){
             sb.append(" ").append(this.tags);
         }
         return sb.toString();

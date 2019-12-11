@@ -1,5 +1,5 @@
 /***
- * Copyright 2013-2015 Michael Kaisser
+ * Copyright 2013-2019 Michael Kaisser
  ***/
 
 package de.txtData.asl.nlp.tools;
@@ -10,6 +10,7 @@ package de.txtData.asl.nlp.tools;
 public abstract class AbstractStemmer {
 
     public abstract String stem(String input);
+    public abstract boolean equals(String a, String b);
 
 }
     

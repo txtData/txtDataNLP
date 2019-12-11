@@ -1,12 +1,26 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
-
+/*
+ *  Copyright 2013-2019 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 package de.txtData.asl.nlp.tools;
 
 import de.txtData.asl.nlp.models.Language;
 import de.txtData.asl.nlp.models.Span;
-import de.txtData.asl.util.files.WordList;
+import de.txtData.asl.nlp.models.Word;
+import de.txtData.asl.util.misc.AslException;
 import opennlp.tools.cmdline.tokenizer.TokenizerModelLoader;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
@@ -25,27 +39,20 @@ public class OpenNLPTokenizer{
     public String modelDirectory;
     public boolean lowercaseAll = false;
     public boolean includeWhitespace = true;
-    public boolean postProcess = false;
-    public String knownAbbreviationsFile = null;
+    public boolean doPostProcess = false;
 
     public String tokensToCutOff = "\"'«»-";
 
     private TokenizerME tokenizer;
-    private WordList knownAbbreviations;
 
     public OpenNLPTokenizer(Language language, String modelDirectory){
-        this(language, modelDirectory, false, null);
+        this(language, modelDirectory, false);
     }
 
     public OpenNLPTokenizer(Language language, String modelDirectory, boolean includeWhitespace){
-        this(language, modelDirectory, includeWhitespace, null);
-    }
-
-    public OpenNLPTokenizer(Language language, String modelDirectory, boolean includeWhitespace, String knownAbbreviationsFile){
         this.language = language;
         this.modelDirectory = modelDirectory;
         this.includeWhitespace = includeWhitespace;
-        this.knownAbbreviationsFile = knownAbbreviationsFile;
         this.initialize();
     }
 
@@ -53,17 +60,17 @@ public class OpenNLPTokenizer{
         try{
             TokenizerModel tokenizerModel = new TokenizerModelLoader().load(new File(this.modelDirectory+"/"+ this.language.getCode()+"-token.bin"));
             tokenizer = new TokenizerME(tokenizerModel);
-            if (this.knownAbbreviationsFile !=null){
-                this.knownAbbreviations = new WordList(this.knownAbbreviationsFile, null, false, "//");
-            }
         }catch(Exception e){
-            e.printStackTrace();
+            throw new AslException(e);
         }
     }
 
     public List<String> getTokens(String sentence){
         sentence = normalize(sentence);
-        String[] tokenized = tokenizer.tokenize(sentence);
+        String[] tokenized;
+        synchronized (this) {
+            tokenized = tokenizer.tokenize(sentence);
+        }
         if (lowercaseAll) this.lowercaseTokens(tokenized);
         return new ArrayList<>(Arrays.asList(tokenized));
     }
@@ -71,15 +78,26 @@ public class OpenNLPTokenizer{
     public List<Span> getTokensAsSpans(String sentence){
         List<Span> results = new ArrayList<>();
         sentence = normalize(sentence);
-        opennlp.tools.util.Span[] spans = tokenizer.tokenizePos(sentence);
+        opennlp.tools.util.Span[] spans;
+        synchronized (this) {
+            spans = tokenizer.tokenizePos(sentence);
+        }
         for (opennlp.tools.util.Span oSpan : spans){
             String surface = sentence.substring(oSpan.getStart(), oSpan.getEnd());
             if (lowercaseAll) surface = surface.toLowerCase();
             Span span = new Span(surface, oSpan.getStart(), oSpan.getEnd());
             results.add(span);
         }
-        if (postProcess){
+        if (doPostProcess){
             results = this.postProcess(results);
+        }
+        return results;
+    }
+
+    public List<Word> getTokensAsWords(String sentence){
+        List<Word> results = new ArrayList<>();
+        for (Span span: this.getTokensAsSpans(sentence)){
+            results.add(new Word(span.surface, span.starts, span.ends));
         }
         return results;
     }
@@ -92,7 +110,6 @@ public class OpenNLPTokenizer{
 
     public List<Span> postProcess(List<Span> input){
         List<Span> results = this.postProcessApostrophes(input);
-        results = this.postProcessAbbreviations(results);
         return results;
     }
 
@@ -123,28 +140,6 @@ public class OpenNLPTokenizer{
             }else{
                 results.add(span);
             }
-        }
-        return results;
-    }
-
-    public List<Span> postProcessAbbreviations(List<Span> input){
-        if (this.knownAbbreviations==null) return input;
-        List<Span> results = new ArrayList<>();
-        boolean addLast = true;
-        for (int i=0; i<input.size()-1 ; i++){
-            String s = input.get(i).surface +input.get(i+1).surface;
-            if (!this.knownAbbreviations.containsLine(s)){
-                results.add(input.get(i));
-                addLast = true;
-            }else{
-                Span span = new Span(s, input.get(i).starts, input.get(i+1).ends);
-                results.add(span);
-                addLast = false;
-                i++;
-            }
-        }
-        if (addLast){
-            results.add(input.get(input.size()-1));
         }
         return results;
     }

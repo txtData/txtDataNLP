@@ -1,57 +1,59 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
-
+/*
+ *  Copyright 2013-2018 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 package de.txtData.asl.util.files;
 
 import de.txtData.asl.util.dataStructures.Dictionary;
 import de.txtData.asl.util.dataStructures.KeyValuePairList;
+import de.txtData.asl.util.misc.AslException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Helper class to read a resource file.
  */
 public class ResourceFile{
 	
-	public String          fileName = null;
-	public String          pathName = null;
-	
-	protected boolean      ignoreCase            = true;
-	private String         commentString         = null;
-	
+	private String  fileName = null;
+	private String  commentString = null;
+    private boolean ignoreCase = true;
+
 	private List<String>   list = new ArrayList<>();
 
-   	protected ResourceFile(){
-   	}
+    public ResourceFile(String fileName){
+        this(fileName, false, null);
+    }
 
-	public ResourceFile(String fileName, String directoryName, boolean ignoreCase, String commentString){
+    public ResourceFile(String fileName, boolean ignoreCase){
+        this(fileName, ignoreCase, null);
+    }
+
+	public ResourceFile(String fileName, boolean ignoreCase, String commentString){
+        this.fileName = fileName;
 		this.ignoreCase     = ignoreCase;
 		this.commentString  = commentString;
-        if (commentString.equals("")) this.commentString = null;
-		
-		File file=null;
-		if (directoryName != null){
-			file = new File(directoryName);
-		}
-		
-		if (file!=null && file.isDirectory() && fileName != null){
-			file = new File(file, fileName);
-		}
-		
-		if (file==null && fileName!=null){
-			file = new File(System.getProperty("user.dir"), fileName);
-		}
-		
-		try{
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+        if (commentString!=null && commentString.equals("")) this.commentString = null;
 
-            this.fileName = file.getName();
-            this.pathName = file.getParent();
-            
+		try(BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(this.fileName), StandardCharsets.UTF_8))) {
             String line;
             while((line = in.readLine()) != null){
             	line=line.trim();
@@ -63,13 +65,11 @@ public class ResourceFile{
                     if (this.commentString!=null && line.contains(this.commentString)){
                         line=line.substring(0,line.indexOf(this.commentString)).trim();
                     }
-                    list.add(line);
+                    this.list.add(line);
             	}
             }
-            in.close();
         }catch(Exception e){
-            System.out.println("Cannot find file '"+file+"'. ");
-            e.printStackTrace();
+            throw new AslException(e);
         }
 	}
 

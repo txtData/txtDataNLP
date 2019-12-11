@@ -1,12 +1,26 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
+/*
+ *  Copyright 2013-2019 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 
 package de.txtData.asl.nlp.tools;
 
 import de.txtData.asl.nlp.models.Language;
 import de.txtData.asl.nlp.models.Span;
-import de.txtData.asl.util.files.WordList;
+import de.txtData.asl.util.misc.AslException;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 
@@ -33,10 +47,10 @@ public class OpenNLPSentenceSplitter{
         this.initialize();
     }
 
-    public OpenNLPSentenceSplitter(Language language, String modelDirectory, String knownAbbreviations){
+    public OpenNLPSentenceSplitter(Language language, String modelDirectory, String knownAbbreviationsFile){
         this.language = language;
         this.modelDirectory = modelDirectory;
-        this.knownAbbreviationsFile = knownAbbreviations;
+        this.knownAbbreviationsFile = knownAbbreviationsFile;
         this.initialize();
     }
 
@@ -45,14 +59,16 @@ public class OpenNLPSentenceSplitter{
             SentenceModel sentenceModel = new SentenceModel(new FileInputStream(this.modelDirectory+"/"+this.language.getCode()+"-sent.bin"));
             sentenceDetector = new SentenceDetectorME(sentenceModel);
             if (this.knownAbbreviationsFile !=null){
-                this.knownAbbreviations = new WordList(this.knownAbbreviationsFile, null, false, "//");
+                this.knownAbbreviations = new WordList(this.knownAbbreviationsFile, false, "//");
             }
         }catch(Exception e){
-            e.printStackTrace();
+            throw new AslException(e);
         }
     }
 
+    // Note: No post-processing is performed in this method.
     public List<String> getSentences(String text){
+        if (text==null) return new ArrayList<>();
         text = normalize(text);
         String[] sentences = sentenceDetector.sentDetect(text);
         return Arrays.asList(sentences);
@@ -60,6 +76,7 @@ public class OpenNLPSentenceSplitter{
 
     public List<Span> getSentencesAsSpans(String text){
         List<Span> results = new ArrayList<>();
+        if (text==null) return results;
         text = normalize(text);
         opennlp.tools.util.Span[]   spans     = sentenceDetector.sentPosDetect(text);
         for (opennlp.tools.util.Span oSpan : spans){

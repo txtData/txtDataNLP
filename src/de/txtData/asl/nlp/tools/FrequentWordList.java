@@ -1,29 +1,44 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
-
+/*
+ *  Copyright 2013-2019 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 package de.txtData.asl.nlp.tools;
 
-import de.txtData.asl.util.files.LineReader;
+import de.txtData.asl.util.files.ResourceFile;
+
 import java.util.HashMap;
 
 /**
- * Reads in from a file a list of words, and their absolute frequencies derived from a corpus.
- * Allows querying for said frequency information.
+ * Reads a list of words from a file, together with their absolute frequencies derived from a corpus.
+ * Allows querying for this frequency information.
  */
 public class FrequentWordList{
 
+    private String separator = " ";
+
     private HashMap<String,FrequentWord> map = new HashMap<>();
-    private long   total       =  0;
-    public  double value100    = -1;
-    public  double value1000   = -1;
-    public  double value10000  = -1;
+    private long totalSize  =  0;
+    private double value100 = -1;
 
     public FrequentWordList(String fileName){
         this.readFromFile(fileName);
     }
 
-    public void override(String fileName){
+    public FrequentWordList(String fileName, String separator){
+        this.separator = separator;
         this.readFromFile(fileName);
     }
 
@@ -36,24 +51,21 @@ public class FrequentWordList{
     }
 
     private void readFromFile(String fileName){
-        LineReader reader = new LineReader(fileName, "UTF8");
+        ResourceFile resourceFile = new ResourceFile(fileName);
         int i = 0;
-        String line;
-        while ((line = reader.readLine())!=null){
+        for (String line : resourceFile.getList()){
             i++;
             FrequentWord fw = new FrequentWord();
-            String parts[] = line.split(" ");
+            String parts[] = line.split(separator);
             fw.word = parts[0];
             fw.position = i;
             fw.count = Integer.parseInt(parts[1]);
-            total += fw.count;
+            totalSize += fw.count;
             map.put(parts[0],fw);
             if (i==100) value100 = fw.count;
-            else if (i==1000) value1000 = fw.count;
-            else if (i==10000) value10000 = fw.count;
         }
         if (i>0){
-            total /= i;
+            totalSize /= i;
         }
     }
 
@@ -66,6 +78,18 @@ public class FrequentWordList{
         FrequentWord fw = this.lookUp(word);
         if (fw!=null) return fw.count;
         return 0;
+    }
+
+    public long getTotalSize(){
+        return totalSize;
+    }
+
+    public double getIDFApproximation(double count){
+        if (count < 0.5) count = 0.5;
+        double idf = value100 / count;
+        idf = Math.log10(idf);
+        if (idf<0.0) idf = 0.0;
+        return idf;
     }
 
     public class FrequentWord{
@@ -84,13 +108,4 @@ public class FrequentWordList{
             return idf;
         }
     }
-
-    public double getIDFApproximation(double count){
-        if (count < 0.5) count = 0.5;
-        double idf = value100 / count;
-        idf = Math.log10(idf);
-        if (idf<0.0) idf = 0.0;
-        return idf;
-    }
-
 }

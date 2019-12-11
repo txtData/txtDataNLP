@@ -1,16 +1,29 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
+/*
+ *  Copyright 2013-2018 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 
 package de.txtData.asl.nlp.annotations;
-
-import de.txtData.asl.util.dataStructures.Bag;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Collection of helper methods, that help dealing with lists of annotations.
+ * Collection of helper methods, that assist dealing with lists of annotations.
+ * In particular, the methods here help to retrieve a set of annotations with specified properties.
  */
 public class AnnotationList extends ArrayList<Annotation> {
 
@@ -96,6 +109,25 @@ public class AnnotationList extends ArrayList<Annotation> {
         return result;
     }
 
+    public Annotation getAnnotationFrom(int index){
+        for (Annotation annotation : this){
+            if (annotation.getSpan().starts==index){
+                return annotation;
+            }
+        }
+        return null;
+    }
+
+    public AnnotationList getAnnotationsFrom(int index){
+        AnnotationList result = new AnnotationList();
+        for (Annotation annotation : this){
+            if (annotation.getSpan().starts==index){
+                result.add(annotation);
+            }
+        }
+        return result;
+    }
+
     public AnnotationList getAnnotationsFromOrAfter(int index){
         AnnotationList result = new AnnotationList();
         int bestDiff = -1;
@@ -117,7 +149,7 @@ public class AnnotationList extends ArrayList<Annotation> {
         return result;
     }
 
-    public AnnotationList getSomehowOverlappingAnnotations(Annotation annotation){
+    public AnnotationList getOverlappingAnnotations(Annotation annotation){
         AnnotationList result = new AnnotationList();
         for (Annotation thisAnno : this){
             if (thisAnno.equals(annotation)) continue;
@@ -157,16 +189,6 @@ public class AnnotationList extends ArrayList<Annotation> {
         return result;
     }
 
-    public AnnotationList getLongestAnnotations(){
-        Bag<Annotation> sizes = new Bag<>();
-        for (Annotation annotation : this){
-            int length = annotation.getSpan().ends-annotation.getSpan().starts;
-            sizes.add(annotation, length);
-        }
-        List<Annotation> longest = sizes.getKeysForHighestValue();
-        return new AnnotationList(longest);
-    }
-
     /**
      * Returns those annotations that are completely contained within another annotation.
      */
@@ -201,6 +223,10 @@ public class AnnotationList extends ArrayList<Annotation> {
 
     public boolean removeAnnotations(List<Annotation> toRemove){
         return this.removeAll(toRemove);
+    }
+
+    public boolean removeAnnotations(String type){
+        return this.removeAll(this.getAnnotations(type));
     }
 
 }

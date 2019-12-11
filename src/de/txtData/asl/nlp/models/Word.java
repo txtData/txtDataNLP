@@ -1,6 +1,20 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
+/*
+ *  Copyright 2013-2018 Michael Kaisser
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See also https://github.com/txtData/nlp
+ */
 
 package de.txtData.asl.nlp.models;
 
@@ -26,21 +40,38 @@ public class Word implements Serializable{
     public static String NUMBER      = "NUMB";
     public static String SEPARATOR   = "SEP"; // /t and /n
 
-    public static String PUNCTUATIONS =  ",.:;-!?#/\"'’«»„“()[]+-•–\"*+«´//«»%…";
+    public static String PUNCTUATIONS =  ",.:;-!?#/\"'’«»„“()[]+-•";
 
     public String surface;
     public String root;
     public String pos;
     public String morph;
 
-    public int starts = -1;
-    public int ends = -1;
+    public int starts = 0;
+    public int ends = 0;
 
     public List<String> types = new ArrayList<>();
     public Double idf = null;
 
     public Word(String surface){
         this.surface = surface;
+    }
+
+    public Word(String surface, int starts, int ends){
+        this.surface = surface;
+        this.starts = starts;
+        this.ends   = ends;
+    }
+
+    public Word(Word toCopy){
+        this.surface = toCopy.surface;
+        this.root = toCopy.root;
+        this.pos = toCopy.pos;
+        this.morph = toCopy.morph;
+        this.starts = toCopy.starts;
+        this.ends = toCopy.ends;
+        this.types= toCopy.types;
+        this.idf = toCopy.idf;
     }
 
     public String toString(){

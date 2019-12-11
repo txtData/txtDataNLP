@@ -1,12 +1,11 @@
-/***
- * Copyright 2013-2015 Michael Kaisser
- ***/
-
 package de.txtData.asl.nlp.models;
 
 import de.txtData.asl.nlp.tools.FrequentWordList;
-import de.txtData.asl.util.files.WordList;
+import de.txtData.asl.nlp.tools.WordList;
 import de.txtData.asl.nlp.tools.AbstractStemmer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Factory that creates <code>Word</code>s.
@@ -34,11 +33,36 @@ public class WordFactory {
         this.frequentWordList = fwl;
     }
 
+    public WordFactory(Language lang, WordList stopWords, AbstractStemmer stemmer){
+        this(lang);
+        this.stopWords = stopWords;
+        this.stemmer = stemmer;
+    }
+
     public WordFactory(Language lang, WordList stopWords, FrequentWordList fwl, AbstractStemmer stemmer){
         this(lang);
         this.stopWords = stopWords;
         this.frequentWordList = fwl;
         this.stemmer = stemmer;
+    }
+
+    // overrides types, idf and root
+    public void augment(Word word){
+        Word w2 = this.createWord(word.surface);
+        if (w2.types!=null && !w2.types.isEmpty()){
+            word.types = w2.types;
+        }
+        word.idf = w2.idf;
+        word.root = w2.root;
+    }
+
+    public List<Word> createWords(List<Span> spans){
+        List<Word> words = new ArrayList<>();
+        for (Span span : spans){
+            Word word = this.createWord(span.surface, span.starts, span.ends);
+            words.add(word);
+        }
+        return words;
     }
 
     public Word createWord(String surface, int start, int end){
