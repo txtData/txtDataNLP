@@ -1,0 +1,10 @@
+serviceName: txtdata.nlp
+offlineMode: true
+
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8081
