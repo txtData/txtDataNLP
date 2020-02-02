@@ -29,6 +29,7 @@ public class Annotation{
     private Span span;
     private IAnnotationObject annotationObject;
 
+
     public Annotation(Span span, IAnnotationObject annotationObject){
         this.span = span;
         this.annotationObject = annotationObject;
@@ -49,6 +50,7 @@ public class Annotation{
         this.annotationObject = new SimpleAnnotationObject(type);
     }
 
+
     public Span getSpan(){
         return this.span;
     }
@@ -57,34 +59,47 @@ public class Annotation{
         this.span = span;
     }
 
-    public int getStart(){
-        return this.span.starts;
+
+    public int getStarts(){
+        return this.span.getStarts();
     }
 
-    public int getEnd(){
-        return this.span.ends;
+    public void setStarts(int starts){
+        this.span.setStarts(starts);
     }
+
+
+    public int getEnds(){
+        return this.span.getEnds();
+    }
+
+    public void setEnds(int ends){
+        this.span.setEnds(ends);
+    }
+
 
     public String getSurfaceText(){
-        return this.span.surface;
+        return this.span.getSurface();
     }
 
     public void setSurfaceText(String surface){
-        this.span.surface = surface;
+        this.span.setSurface(surface);
     }
+
 
     public void setAnnotationObject(IAnnotationObject annoObj){
         this.annotationObject = annoObj;
-    }
-
-    public IAnnotationObject getAnnotationObject(){
-        return this.annotationObject;
     }
 
     public <T extends IAnnotationObject> T getAnnotationObject(Class<T> classOfT) {
         if (!classOfT.isInstance(this.getAnnotationObject())) return null;
         return (T) this.getAnnotationObject();
     }
+
+    public IAnnotationObject getAnnotationObject(){
+        return this.annotationObject;
+    }
+
 
     public String getType(){
         if (this.annotationObject!=null){
@@ -100,21 +115,22 @@ public class Annotation{
         }
     }
 
+
     public boolean equalsSpan(Span toCompare){
-        if (this.span.ends != toCompare.ends) return false;
-        if (this.span.starts != toCompare.starts) return false;
-        if (this.span.surface != null ? !this.span.surface.equals(toCompare.surface) : toCompare.surface != null) return false;
+        if (this.span.getEnds() != toCompare.getEnds()) return false;
+        if (this.span.getStarts() != toCompare.getStarts()) return false;
+        if (this.span.getSurface() != null ? !this.span.getSurface().equals(toCompare.getSurface()) : toCompare.getSurface() != null) return false;
         return true;
     }
 
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("[").append(this.span.starts).append("-").append(this.span.ends).append("] ");
+        sb.append("[").append(this.span.getStarts()).append("-").append(this.span.getEnds()).append("] ");
         String span = sb.toString();
         sb = new StringBuilder();
         sb.append(PrettyString.create(span,11));
-        sb.append(" '").append(this.span.surface).append("' ");
+        sb.append(" '").append(this.span.getSurface()).append("' ");
         if (annotationObject!=null) {
             sb.append(annotationObject.toString());
         }else{

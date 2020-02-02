@@ -48,14 +48,14 @@ public class NGram {
             List<Word> nGram = new ArrayList<>();
             for (int j=i; j<textUnit.getWords().size() && j<i+minLength; j++){
                 Word word = new Word(textUnit.getWords().get(j));
-                if (lowercase) word.surface = word.surface.toLowerCase();
+                if (lowercase) word.setSurface(word.getSurface().toLowerCase());
                 nGram.add(word);
             }
             if (nGram.size()<minLength) continue;
             nGrams.add(new NGram(nGram));
             for (int j=i+minLength; j<textUnit.getWords().size() && j<i+maxLength; j++){
                 Word word = new Word(textUnit.getWords().get(j));
-                if (lowercase) word.surface = word.surface.toLowerCase();
+                if (lowercase) word.setSurface(word.getSurface().toLowerCase());
                 nGram.add(word);
                 nGrams.add(new NGram(nGram));
             }
@@ -71,7 +71,7 @@ public class NGram {
             Word nGramWord = this.words.get(pos);
             if (sentenceWord.equals(nGramWord)){
                 if (this.words.size()-1==pos){
-                    Annotation annotation = new Annotation(this.surface, start.starts, sentenceWord.ends, "NGram");
+                    Annotation annotation = new Annotation(this.surface, start.getStarts(), sentenceWord.getEnds(), "NGram");
                     textUnit.addAnnotation(annotation);
                     i = (i - pos)+1;
                     pos = 0;
@@ -86,12 +86,12 @@ public class NGram {
 
     public int getFromCharacter(){
         if (words==null || words.isEmpty()) return -1;
-        return words.get(0).starts;
+        return words.get(0).getStarts();
     }
 
     public int getToCharacter(){
         if (words==null || words.isEmpty()) return -1;
-        return words.get(words.size()-1).ends;
+        return words.get(words.size()-1).getEnds();
     }
 
     public Word getFirstWord(){
@@ -113,11 +113,11 @@ public class NGram {
         }
         StringBuilder stringBuilder = new StringBuilder();
         for (Word word : words){
-            stringBuilder.append(word.surface);
+            stringBuilder.append(word.getSurface());
             if (pos)
-                stringBuilder.append("/").append(word.pos);
+                stringBuilder.append("/").append(word.getPos());
             if (tags)
-                stringBuilder.append("/").append(word.types);
+                stringBuilder.append("/").append(word.getTypes());
             stringBuilder.append(" ");
         }
         return stringBuilder.toString();
@@ -167,7 +167,7 @@ public class NGram {
     public List<String> getSurfaceAsList(){
         List<String> results = new ArrayList<>();
         for (Word word : words){
-            results.add(word.surface);
+            results.add(word.getSurface());
         }
         return results;
     }
@@ -187,7 +187,7 @@ public class NGram {
 
     public boolean containsWord(String surface){
         for (Word word : this.words){
-            if (word.surface.equals(surface)){
+            if (word.getSurface().equals(surface)){
                 return true;
             }
         }
@@ -206,8 +206,8 @@ public class NGram {
         StringBuffer sb = new StringBuffer();
         for (Word word : words){
             sb.append(word);
-            if (word.pos!=null){
-                sb.append("/").append(word.pos);
+            if (word.getPos()!=null){
+                sb.append("/").append(word.getPos());
             }else if (!word.isType(Word.WHITESPACE)){
                 sb.append("/").append("-");
             }

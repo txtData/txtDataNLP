@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2018 Michael Kaisser
+ *  Copyright 2013-2020 Michael Kaisser
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 package de.txtdata.asl.nlp.models;
 
+import de.txtdata.asl.util.dataStructures.KeyValuePairList;
 import de.txtdata.asl.util.misc.PrettyString;
 
 import java.io.Serializable;
@@ -31,106 +32,127 @@ import java.util.List;
  */
 public class Word implements Serializable{
 
-    public static String UNSET       = "UNSET";
-    public static String STOPWORD    = "STOP";
-    public static String UPPERCASE   = "UPPER";
-    public static String LOWERCASE   = "LOWER";
-    public static String WHITESPACE  = "WHITE";
-    public static String PUNCTUATION = "PUNCT";
-    public static String NUMBER      = "NUMB";
-    public static String SEPARATOR   = "SEP"; // /t and /n
+    public static final String UNSET       = "UNSET";
+    public static final String STOPWORD    = "STOP";
+    public static final String UPPERCASE   = "UPPER";
+    public static final String LOWERCASE   = "LOWER";
+    public static final String WHITESPACE  = "WHITE";
+    public static final String PUNCTUATION = "PUNCT";
+    public static final String NUMBER      = "NUMB";
+    public static final String SEPARATOR   = "SEP"; // /t and /n
 
-    public static String PUNCTUATIONS =  ",.:;-!?#/\"'’«»„“()[]+-•";
+    private static String PUNCTUATIONS =  ",.:;-!?#/\"'’«»„“()[]+-•";
 
-    public String surface;
-    public String root;
-    public String pos;
-    public String morph;
 
-    public int starts = 0;
-    public int ends = 0;
+    private String surface;
+    private String root;
+    private String pos;
+    private String morph;
 
-    public List<String> types = new ArrayList<>();
-    public Double idf = null;
+    private int starts = 0;
+    private int ends = 0;
+
+    private List<String> types = new ArrayList<>();
+    private Double idf = null;
+    private KeyValuePairList<String, Object> features = new KeyValuePairList<>();
+
 
     public Word(String surface){
-        this.surface = surface;
+        this.setSurface(surface);
     }
 
     public Word(String surface, int starts, int ends){
-        this.surface = surface;
-        this.starts = starts;
-        this.ends   = ends;
+        this.setSurface(surface);
+        this.setStarts(starts);
+        this.setEnds(ends);
     }
 
+    /**
+     * Copy constructor.
+     * @param toCopy The word object to copy.
+     */
     public Word(Word toCopy){
-        this.surface = toCopy.surface;
-        this.root = toCopy.root;
-        this.pos = toCopy.pos;
-        this.morph = toCopy.morph;
-        this.starts = toCopy.starts;
-        this.ends = toCopy.ends;
-        this.types= toCopy.types;
-        this.idf = toCopy.idf;
+        this.setSurface(toCopy.getSurface());
+        this.setRoot(toCopy.getRoot());
+        this.setPos(toCopy.getPos());
+        this.setMorph(toCopy.getMorph());
+        this.setStarts(toCopy.getStarts());
+        this.setEnds(toCopy.getEnds());
+        this.setTypes(toCopy.getTypes());
+        this.setIdf(toCopy.getIdf());
     }
 
-    public String toString(){
-        return this.surface;
+
+    public String getSurface() {
+        return surface;
     }
 
-    public String toString(boolean extended){
-        if (!extended) return this.surface;
-        StringBuilder sb = new StringBuilder(this.surface);
-        sb.append("/").append(this.types);
-        if (root !=null){
-            sb.append("/").append(root);
-        }
-        if (pos!=null){
-            sb.append("/").append(pos);
-        }
-        if (morph!=null) {
-            sb.append("/").append(morph);
-        }
-        if (idf!=null && idf!=-1.0) {
-            sb.append("/").append(idf);
-        }
-        if (starts !=-1 && ends !=-1){
-            sb.append(" (").append(starts).append("-").append(ends).append(")");
-        }
-        return sb.toString();
+    public void setSurface(String surface) {
+        this.surface = surface;
     }
 
-    public String prettyString(){
-        StringBuilder sb = new StringBuilder(PrettyString.create(this.surface,20));
-        if (root !=null){
-            sb.append(PrettyString.create(this.root,20));
-        }
-        if (pos!=null){
-            sb.append(PrettyString.create(this.pos,10));
-        }
-        if (morph!=null){
-            sb.append(PrettyString.create(this.morph,20));
-        }
 
-        sb.append(PrettyString.create(this.typeString(),12));
-        if (starts !=-1 && ends !=-1){
-            String fromTo ="("+ starts +"-"+ ends +")";
-            sb.append(PrettyString.create(fromTo,12));
-        }
-        if (idf!=null && idf!=-1.0) {
-            sb.append(PrettyString.create(this.idf,1,7)).append("  ");
-        }
-        return sb.toString();
+    public String getRoot() {
+        return root;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
+    }
+
+
+    public String getPos() {
+        return pos;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
+
+
+    public String getMorph() {
+        return morph;
+    }
+
+    public void setMorph(String morph) {
+        this.morph = morph;
+    }
+
+
+    public int getStarts() {
+        return starts;
+    }
+
+    public void setStarts(int starts) {
+        this.starts = starts;
+    }
+
+
+    public int getEnds() {
+        return ends;
+    }
+
+    public void setEnds(int ends) {
+        this.ends = ends;
+    }
+
+
+    public List<String> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
     public boolean isType(String type){
-        if (this.types.contains(type)) return true;
+        if (this.getTypes().contains(type)) return true;
         return false;
     }
 
-    protected String typeString(){
+    public String getTypeString(){
         StringBuilder sb = new StringBuilder();
-        for (String type : this.types){
+        for (String type : this.getTypes()){
             sb = sb.append(type).append("/");
         }
         String result = sb.toString();
@@ -139,8 +161,36 @@ public class Word implements Serializable{
     }
 
     public void addType(String s){
-        this.types.add(s);
+        this.getTypes().add(s);
     }
+
+
+    public Double getIdf() {
+        return idf;
+    }
+
+    public void setIdf(Double idf) {
+        this.idf = idf;
+    }
+
+
+    public KeyValuePairList<String, Object> getFeatures(){
+        return this.features;
+    }
+
+    public void setFeatures(KeyValuePairList<String, Object> features){
+        this.features = features;
+    }
+
+
+    public static String getPunctuations(){
+        return PUNCTUATIONS;
+    }
+
+    public static void setPunctuations(String punctuations){
+        PUNCTUATIONS = punctuations;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -149,13 +199,64 @@ public class Word implements Serializable{
 
         Word word = (Word) o;
 
-        if (surface != null ? !surface.equals(word.surface) : word.surface != null) return false;
+        if (getSurface() != null ? !getSurface().equals(word.getSurface()) : word.getSurface() != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return surface != null ? surface.hashCode() : 0;
+        return getSurface() != null ? getSurface().hashCode() : 0;
     }
+
+    public String toString(){
+        return this.getSurface();
+    }
+
+    public String toString(boolean extended){
+        if (!extended) return this.getSurface();
+        StringBuilder sb = new StringBuilder(this.getSurface());
+        sb.append("/").append(this.getTypes());
+        if (getRoot() !=null){
+            sb.append("/").append(getRoot());
+        }
+        if (getPos() !=null){
+            sb.append("/").append(getPos());
+        }
+        if (getMorph() !=null) {
+            sb.append("/").append(getMorph());
+        }
+        if (getIdf() !=null && getIdf() !=-1.0) {
+            sb.append("/").append(getIdf());
+        }
+        if (getStarts() !=-1 && getEnds() !=-1){
+            sb.append(" (").append(getStarts()).append("-").append(getEnds()).append(")");
+        }
+        return sb.toString();
+    }
+
+    public String prettyString(){
+        StringBuilder sb = new StringBuilder(PrettyString.create(this.getSurface(),20));
+        if (getRoot() !=null){
+            sb.append(PrettyString.create(this.getRoot(),20));
+        }
+        if (getPos() !=null){
+            sb.append(PrettyString.create(this.getPos(),10));
+        }
+        if (getMorph() !=null){
+            sb.append(PrettyString.create(this.getMorph(),20));
+        }
+
+        sb.append(PrettyString.create(this.getTypeString(),12));
+        if (getStarts() !=-1 && getEnds() !=-1){
+            String fromTo ="("+ getStarts() +"-"+ getEnds() +")";
+            sb.append(PrettyString.create(fromTo,12));
+        }
+        if (getIdf() !=null && getIdf() !=-1.0) {
+            sb.append(PrettyString.create(this.getIdf(),1,7)).append("  ");
+        }
+        return sb.toString();
+    }
+
+
 }

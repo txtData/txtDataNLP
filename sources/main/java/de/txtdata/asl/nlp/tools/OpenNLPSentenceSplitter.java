@@ -91,15 +91,15 @@ public class OpenNLPSentenceSplitter{
     private List<Span> postProcess(List<Span> spans, String text){
         if (this.knownAbbreviations==null) return spans;
         for (int i=0; i<spans.size(); i++){
-            String surface = spans.get(i).surface;
+            String surface = spans.get(i).getSurface();
             if (surface==null) continue;
             int index = surface.lastIndexOf(" ");
             if (index!=-1){
                 String lastWord = surface.substring(index+1,surface.length());
                 boolean onList = this.knownAbbreviations.isOnList(lastWord);
                 if (onList && spans.size()-1>i){
-                    int starts = spans.get(i).starts;
-                    int ends = spans.get(i+1).ends;
+                    int starts = spans.get(i).getStarts();
+                    int ends = spans.get(i + 1).getEnds();
                     String sentence = text.substring(starts,ends);
                     spans.remove(i);
                     spans.remove(i);

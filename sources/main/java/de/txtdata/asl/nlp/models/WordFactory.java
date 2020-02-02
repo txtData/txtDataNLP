@@ -48,18 +48,18 @@ public class WordFactory {
 
     // overrides types, idf and root
     public void augment(Word word){
-        Word w2 = this.createWord(word.surface);
-        if (w2.types!=null && !w2.types.isEmpty()){
-            word.types = w2.types;
+        Word w2 = this.createWord(word.getSurface());
+        if (w2.getTypes()!=null && !w2.getTypes().isEmpty()){
+            word.setTypes(w2.getTypes());
         }
-        word.idf = w2.idf;
-        word.root = w2.root;
+        word.setIdf(w2.getIdf());
+        word.setRoot(w2.getRoot());
     }
 
     public List<Word> createWords(List<Span> spans){
         List<Word> words = new ArrayList<>();
         for (Span span : spans){
-            Word word = this.createWord(span.surface, span.starts, span.ends);
+            Word word = this.createWord(span.getSurface(), span.getStarts(), span.getEnds());
             words.add(word);
         }
         return words;
@@ -67,18 +67,16 @@ public class WordFactory {
 
     public Word createWord(String surface, int start, int end){
         Word word = this.createWord(surface);
-        word.starts = start;
-        word.ends = end;
+        word.setStarts(start);
+        word.setEnds(end);
         return word;
     }
 
-    public Word createWord(String surface, String pos, int start, int end){
-        Word word = this.createWord(surface);
+    public Word createWord(String surface, String pos, int starts, int ends){
+        Word word = this.createWord(surface, starts, ends);
         if (!word.isType(Word.WHITESPACE)) {
-            word.pos = pos;
+            word.setPos(pos);
         }
-        word.starts = start;
-        word.ends = end;
         return word;
     }
 
@@ -90,7 +88,7 @@ public class WordFactory {
             Character c = surface.charAt(0);
             if (Character.isWhitespace(c)) {
                 word.addType(Word.WHITESPACE);
-            }else if (Word.PUNCTUATIONS.contains(surface)) {
+            }else if (Word.getPunctuations().contains(surface)) {
                 word.addType(Word.PUNCTUATION);
             }
         }
@@ -102,7 +100,7 @@ public class WordFactory {
         }else if (firstLetterIsLowerCase(surface)) {
             word.addType(Word.LOWERCASE);
         }else if (this.isPunctuation(surface)) {
-            if (!word.types.contains(Word.PUNCTUATION)) {
+            if (!word.getTypes().contains(Word.PUNCTUATION)) {
                 word.addType(Word.PUNCTUATION);
             }
         }
@@ -132,21 +130,21 @@ public class WordFactory {
                 }
             }
             FrequentWordList.FrequentWord fw = frequentWordList.lookUp(lookUp);
-            if (fw==null) word.idf = frequentWordList.getIDFApproximation(0);
-            else word.idf = fw.getIDFApproximation();
+            if (fw==null) word.setIdf(frequentWordList.getIDFApproximation(0));
+            else word.setIdf(fw.getIDFApproximation());
         }
         if (stemmer!=null){
-            word.root = stemmer.stem(surface);
+            word.setRoot(stemmer.stem(surface));
         }
         return word;
     }
 
     private boolean isPunctuation(String s){
-        if (Word.PUNCTUATIONS.contains(s)) return true;
+        if (Word.getPunctuations().contains(s)) return true;
         if (s.length()==1) return false;
         String[] parts = s.split("");
         for (String part : parts){
-            if (!Word.PUNCTUATIONS.contains(part)){
+            if (!Word.getPunctuations().contains(part)){
                 return false;
             }
         }

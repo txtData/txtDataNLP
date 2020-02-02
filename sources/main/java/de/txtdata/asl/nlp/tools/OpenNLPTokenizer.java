@@ -97,7 +97,7 @@ public class OpenNLPTokenizer{
     public List<Word> getTokensAsWords(String sentence){
         List<Word> results = new ArrayList<>();
         for (Span span: this.getTokensAsSpans(sentence)){
-            results.add(new Word(span.surface, span.starts, span.ends));
+            results.add(new Word(span.getSurface(), span.getStarts(), span.getEnds()));
         }
         return results;
     }
@@ -116,27 +116,27 @@ public class OpenNLPTokenizer{
     public List<Span> postProcessApostrophes(List<Span> input){
         List<Span> results = new ArrayList<>();
         for (Span span : input){
-            if (span.surface.length()<=1){
+            if (span.getSurface().length()<=1){
                 results.add(span);
                 continue;
             }
-            String first = span.surface.substring(0,1);
-            String last = span.surface.substring(span.surface.length()-1, span.surface.length());
+            String first = span.getSurface().substring(0,1);
+            String last = span.getSurface().substring(span.getSurface().length()-1, span.getSurface().length());
             boolean inFirst = this.tokensToCutOff.contains(first);
             boolean inLast = this.tokensToCutOff.contains(last);
             if (inFirst && inLast){
-                String middle = span.surface.substring(1,span.surface.length()-1);
-                results.add(new Span(first, span.starts, span.starts+1));
-                results.add(new Span(middle, span.starts+1, span.ends-1));
-                results.add(new Span(last, span.ends-1, span.ends));
+                String middle = span.getSurface().substring(1, span.getSurface().length()-1);
+                results.add(new Span(first, span.getStarts(), span.getStarts() +1));
+                results.add(new Span(middle, span.getStarts() +1, span.getEnds() -1));
+                results.add(new Span(last, span.getEnds() -1, span.getEnds()));
             }else if (inFirst){
-                String remainder = span.surface.substring(1,span.surface.length());
-                results.add(new Span(first, span.starts, span.starts+1));
-                results.add(new Span(remainder, span.starts+1, span.ends));
+                String remainder = span.getSurface().substring(1, span.getSurface().length());
+                results.add(new Span(first, span.getStarts(), span.getStarts() +1));
+                results.add(new Span(remainder, span.getStarts() +1, span.getEnds()));
             }else if (inLast){
-                String remainder = span.surface.substring(0,span.surface.length()-1);
-                results.add(new Span(remainder, span.starts, span.ends-1));
-                results.add(new Span(last, span.ends-1, span.ends));
+                String remainder = span.getSurface().substring(0, span.getSurface().length()-1);
+                results.add(new Span(remainder, span.getStarts(), span.getEnds() -1));
+                results.add(new Span(last, span.getEnds() -1, span.getEnds()));
             }else{
                 results.add(span);
             }

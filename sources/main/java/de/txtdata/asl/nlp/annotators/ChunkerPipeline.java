@@ -87,19 +87,19 @@ public class ChunkerPipeline extends AbstractCreator {
         int annotationStart = -1;
         Word lastWord = null;
         for (Word word : sentence.getWords()){
-            if (word.pos!=null && word.pos.startsWith("N")){
-                if (annotationStart==-1) annotationStart = word.starts;
+            if (word.getPos()!=null && word.getPos().startsWith("N")){
+                if (annotationStart==-1) annotationStart = word.getStarts();
             }else if (annotationStart!=-1){
-                String surface = sentence.getTextSurface(annotationStart, lastWord.ends);
-                Annotation annotation = new Annotation(surface, annotationStart, lastWord.ends, "NounChunk");
+                String surface = sentence.getSurfaceText(annotationStart, lastWord.getEnds());
+                Annotation annotation = new Annotation(surface, annotationStart, lastWord.getEnds(), "NounChunk");
                 sentence.addAnnotation(annotation);
                 annotationStart = -1;
             }
             lastWord = word;
         }
         if (annotationStart!=-1) {
-            String surface = sentence.getTextSurface(annotationStart, lastWord.ends);
-            Annotation annotation = new Annotation(surface, annotationStart, lastWord.ends, "NounChunk");
+            String surface = sentence.getSurfaceText(annotationStart, lastWord.getEnds());
+            Annotation annotation = new Annotation(surface, annotationStart, lastWord.getEnds(), "NounChunk");
             sentence.addAnnotation(annotation);
         }
     }

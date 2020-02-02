@@ -54,7 +54,7 @@ public abstract class RecursiveDictionaryAnnotator<T> extends AbstractAnnotator 
         List<Integer> startPos = new ArrayList<>();
         for (int i=0; sentence.getWords().size()>i ;i++){
             Word word = sentence.getWords().get(i);
-            if (word.surface.trim().equals("")) continue; // ignore whitespace, if present
+            if (word.getSurface().trim().equals("")) continue; // ignore whitespace, if present
             List<RecursiveDictionaryMatch<T>> newDictionaries = new ArrayList<>();
             List<Integer> newStartPos = new ArrayList<>();
             int j=-1;

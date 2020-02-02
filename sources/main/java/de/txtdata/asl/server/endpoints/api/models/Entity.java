@@ -58,8 +58,8 @@ public class Entity{
         entity.surface = annotation.getSurfaceText();
         entity.type = annotation.getType();
         entity.field = fieldName;
-        entity.starts = annotation.getSpan().starts;
-        entity.ends = annotation.getSpan().ends;
+        entity.starts = annotation.getSpan().getStarts();
+        entity.ends = annotation.getSpan().getEnds();
         return entity;
     }
 }

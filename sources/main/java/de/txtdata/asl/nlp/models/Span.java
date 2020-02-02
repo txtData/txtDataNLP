@@ -23,32 +23,56 @@ package de.txtdata.asl.nlp.models;
  * Please note: A Span has no meaning attached to it. If a text span is supposed to carry meaning, use annotation.
  */
 public class Span{
-    public String surface;
-    public int starts;
-    public int ends;
+    private String surface;
+    private int starts;
+    private int ends;
 
     public Span(String surface, int starts, int ends){
-        this.surface = surface;
-        this.starts = starts;
-        this.ends   = ends;
+        this.setSurface(surface);
+        this.setStarts(starts);
+        this.setEnds(ends);
     }
 
     public Span recreate(int offset){
-        return new Span(this.surface, this.starts+offset, this.ends+offset);
+        return new Span(this.getSurface(), this.getStarts() +offset, this.getEnds() +offset);
+    }
+
+    public String getSurface() {
+        return surface;
+    }
+
+    public void setSurface(String surface) {
+        this.surface = surface;
+    }
+
+    public int getStarts() {
+        return starts;
+    }
+
+    public void setStarts(int starts) {
+        this.starts = starts;
+    }
+
+    public int getEnds() {
+        return ends;
+    }
+
+    public void setEnds(int ends) {
+        this.ends = ends;
     }
 
     public boolean contains(Span s){
-        return (s.starts>=this.starts && s.ends<=this.ends);
+        return (s.getStarts() >= this.getStarts() && s.getEnds() <= this.getEnds());
     }
 
     public int getLength(){
-        return this.ends-this.starts;
+        return this.getEnds() - this.getStarts();
     }
 
     // returns a negative value if the spans overlap.
     public int differenceTo(Span other){
-        int diff1 =  this.starts - other.ends;
-        int diff2 =  this.ends - other.starts;
+        int diff1 =  this.getStarts() - other.getEnds();
+        int diff2 =  this.getEnds() - other.getStarts();
         int diff1a = Math.abs(diff1);
         int diff2a = Math.abs(diff2);
         if ((diff1!=diff1a) != (diff2!=diff2a)){
@@ -63,13 +87,13 @@ public class Span{
     * @return A new span. Please note that the 'text' field will always be null;
     */
     public Span subsume(Span s){
-        Span result = new Span(null, this.starts, this.ends);
+        Span result = new Span(null, this.getStarts(), this.getEnds());
         if (s==null) return result;
-        if (result.starts==-1 || result.starts>s.starts && s.starts!=-1){
-            result.starts = s.starts;
+        if (result.getStarts() ==-1 || result.getStarts() > s.getStarts() && s.getStarts() !=-1){
+            result.setStarts(s.getStarts());
         }
-        if (result.ends==-1 || result.ends<s.ends && s.ends!=-1){
-            result.ends = s.ends;
+        if (result.getEnds() ==-1 || result.getEnds() < s.getEnds() && s.getEnds() !=-1){
+            result.setEnds(s.getEnds());
         }
         return result;
     }
@@ -79,16 +103,16 @@ public class Span{
     }
 
     public boolean includes(Span s, boolean orEquals){
-        if ((this.starts<s.starts && this.ends>s.ends)
-                ||(this.starts<=s.starts && this.ends>s.ends)
-                ||(this.starts<s.starts && this.ends>=s.ends)
+        if ((this.getStarts() < s.getStarts() && this.getEnds() > s.getEnds())
+                ||(this.getStarts() <= s.getStarts() && this.getEnds() > s.getEnds())
+                ||(this.getStarts() < s.getStarts() && this.getEnds() >= s.getEnds())
                 )return true;
         if (!orEquals) return false;
-        return (this.starts<=s.starts && this.ends>=s.ends);
+        return (this.getStarts() <= s.getStarts() && this.getEnds() >= s.getEnds());
     }
 
     public boolean hasSamePositions(Span s){
-        return (this.starts==s.starts && this.ends==s.ends);
+        return (this.getStarts() == s.getStarts() && this.getEnds() == s.getEnds());
     }
 
     public boolean somehowOverlaps(Span other){
@@ -97,7 +121,7 @@ public class Span{
     }
 
     public boolean contains(int index){
-        return (this.starts<=index && this.ends>=index);
+        return (this.getStarts() <=index && this.getEnds() >=index);
     }
 
     @Override
@@ -105,19 +129,20 @@ public class Span{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Span span = (Span) o;
-        if (ends != span.ends) return false;
-        if (starts != span.starts) return false;
-        if (surface != null ? !surface.equals(span.surface) : span.surface != null) return false;
+        if (getEnds() != span.getEnds()) return false;
+        if (getStarts() != span.getStarts()) return false;
+        if (getSurface() != null ? !getSurface().equals(span.getSurface()) : span.getSurface() != null) return false;
         return true;
     }
 
     @Override
     public String toString(){
-        return "'"+this.surface +"' "+this.starts+"-"+this.ends;
+        return "'"+ this.getSurface() +"' "+ this.getStarts() +"-"+ this.getEnds();
     }
 
     @Override
     public int hashCode(){
         return this.toString().hashCode();
     }
+
 }

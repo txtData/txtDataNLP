@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2018 Michael Kaisser
+ *  Copyright 2013-2020 Michael Kaisser
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- *  See also https://github.com/txtData/nlp
+ *  See also https://github.com/txtData/txtDataNLP
  */
 
 package de.txtdata.asl.nlp.models;
@@ -30,13 +30,24 @@ import java.util.List;
  */
 public class TextUnit{
 
-    protected String surface = null;
-    protected AnnotationList annotations = new AnnotationList();
+    private String surface;
     private List<Word> words = new ArrayList<>();
+    private AnnotationList annotations = new AnnotationList();
+
 
     public TextUnit(String surface){
         this.surface = surface;
     }
+
+
+    public String getSurfaceText(){
+        return this.surface;
+    }
+
+    public String getSurfaceText(int from, int to){
+        return this.getSurfaceText().substring(from, to);
+    }
+
 
     public void setWords(List<Word> words){
         this.words = words;
@@ -46,12 +57,12 @@ public class TextUnit{
         return this.words;
     }
 
-    public Word getTokenAtOrAfter(int index){
+    public Word getWordAtOrAfter(int index){
         Word result = null;
         int bestDiff = -1;
         for (Word s : words){
-            if (s.starts >=index){
-                int diff = s.starts -index;
+            if (s.getStarts() >=index){
+                int diff = s.getStarts() -index;
                 if (bestDiff==-1){
                     result = s;
                     bestDiff = diff;
@@ -67,12 +78,12 @@ public class TextUnit{
         return result;
     }
 
-    public Word getTokenBefore(int index){
+    public Word getWordBefore(int index){
         Word result = null;
         int bestDiff = -1;
         for (Word s : words){
-            if (s.starts <index){
-                int diff = s.starts -index;
+            if (s.getStarts() <index){
+                int diff = s.getStarts() -index;
                 if (bestDiff==-1){
                     result = s;
                     bestDiff = diff;
@@ -85,16 +96,41 @@ public class TextUnit{
         return result;
     }
 
-    public void addAnnotation(Annotation annotation){
-        this.annotations.add(annotation);
+    public List<Word> getWordsForAnnotation(Annotation annotation){
+        return this.getWordsBetween(annotation.getSpan().getStarts(), annotation.getSpan().getEnds());
     }
 
-    public void addAnnotations(List<Annotation> annotations){
-        this.annotations.addAll(annotations);
+    public List<Word> getWordsBetween(int start, int end){
+        List<Word> words = new ArrayList<>();
+        for (Word word : this.getWords()){
+            if (word.getStarts()>=start && word.getEnds()<=end){
+                words.add(word);
+            }
+        }
+        return words;
     }
+
+    public List<Word> getWordsAfter(int start){
+        List<Word> words = new ArrayList<>();
+        for (Word word : this.getWords()){
+            if (word.getStarts()>=start){
+                words.add(word);
+            }
+        }
+        return words;
+    }
+
+    public List<String> getWordSurfaces(){
+        List<String> results = new ArrayList<>();
+        for (Word word : this.getWords()){
+            results.add(word.getSurface());
+        }
+        return results;
+    }
+
 
     public AnnotationList getAnnotations() {
-        return annotations;
+        return this.annotations;
     }
 
     public AnnotationList getAnnotations(String type){
@@ -103,6 +139,14 @@ public class TextUnit{
 
     public void setAnnotations(List<Annotation> annotations){
         this.annotations = new AnnotationList(annotations);
+    }
+
+    public void addAnnotation(Annotation annotation){
+        this.annotations.add(annotation);
+    }
+
+    public void addAnnotations(List<Annotation> annotations){
+        this.annotations.addAll(annotations);
     }
 
     public boolean removeAnnotation(Annotation annotation){
@@ -121,45 +165,6 @@ public class TextUnit{
         return !this.getAnnotations(type).isEmpty();
     }
 
-    public List<Word> getTokensForAnnotation(Annotation annotation){
-        return this.getTokensBetween(annotation.getSpan().starts, annotation.getSpan().ends);
-    }
-
-    public List<Word> getTokensBetween(int start, int end){
-        List<Word> words = new ArrayList<>();
-        for (Word word : this.getWords()){
-            if (word.starts>=start && word.ends<=end){
-                words.add(word);
-            }
-        }
-        return words;
-    }
-
-    public List<Word> getTokensAfter(int start){
-        List<Word> words = new ArrayList<>();
-        for (Word word : this.getWords()){
-            if (word.starts>=start){
-                words.add(word);
-            }
-        }
-        return words;
-    }
-
-    public List<String> getTokenSurfaces(){
-        List<String> results = new ArrayList<>();
-        for (Word word : this.getWords()){
-            results.add(word.surface);
-        }
-        return results;
-    }
-
-    public String getSurfaceText(){
-        return this.surface;
-    }
-
-    public String getTextSurface(int from, int to){
-        return this.getSurfaceText().substring(from, to);
-    }
 
     public String toString(){
         return this.toString(true,true);

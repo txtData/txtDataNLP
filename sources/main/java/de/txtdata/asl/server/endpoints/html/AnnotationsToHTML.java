@@ -40,9 +40,9 @@ public class AnnotationsToHTML {
         String result = text;
         int added = 0;
         for (Annotation annotation : annotations){
-            String before = result.substring(0, annotation.getSpan().starts + added);
-            String after = result.substring(annotation.getSpan().ends + added, original.length() + added);
-            String between = result.substring(annotation.getSpan().starts + added, annotation.getSpan().ends + added);
+            String before = result.substring(0, annotation.getSpan().getStarts() + added);
+            String after = result.substring(annotation.getSpan().getEnds() + added, original.length() + added);
+            String between = result.substring(annotation.getSpan().getStarts() + added, annotation.getSpan().getEnds() + added);
             String color = typesToColors.get(annotation.getType());
             if (color==null){
                 color = typesToColors.get("Other");
@@ -95,10 +95,10 @@ public class AnnotationsToHTML {
         for (Annotation toAdd : annotations){
             int i = 0;
             for (Annotation current : sorted){
-                if (toAdd.getSpan().starts<current.getSpan().starts){
+                if (toAdd.getSpan().getStarts() < current.getSpan().getStarts()){
                     break;
-                }else if (toAdd.getSpan().starts==current.getSpan().starts){
-                    if (toAdd.getSpan().ends>=current.getSpan().ends){
+                }else if (toAdd.getSpan().getStarts() == current.getSpan().getStarts()){
+                    if (toAdd.getSpan().getEnds() >= current.getSpan().getEnds()){
                         break;
                     }
                 }
@@ -116,9 +116,9 @@ public class AnnotationsToHTML {
         List<Annotation> results = new ArrayList<>();
         int lastEnd = -1;
         for (Annotation annotation : annotations){
-            if (annotation.getSpan().starts>lastEnd){
+            if (annotation.getSpan().getStarts() >lastEnd){
                 results.add(annotation);
-                lastEnd = annotation.getSpan().ends;
+                lastEnd = annotation.getSpan().getEnds();
             }
         }
         return results;

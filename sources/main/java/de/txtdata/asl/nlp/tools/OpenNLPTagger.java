@@ -50,7 +50,7 @@ public class OpenNLPTagger {
         String[] tokenized = new String[spans.size()];
         int i=0;
         for (Span span : spans){
-            tokenized[i] = span.surface;
+            tokenized[i] = span.getSurface();
             i++;
         }
         String[] tagged = tagger.tag(tokenized);
@@ -62,9 +62,9 @@ public class OpenNLPTagger {
             String tag = tagged[j];
             Span span = spans.get(j);
             Word word = new Word(token);
-            word.pos = tag;
-            word.starts = span.starts;
-            word.ends = span.ends;
+            word.setPos(tag);
+            word.setStarts(span.getStarts());
+            word.setEnds(span.getEnds());
             results.add(word);
             j++;
         }

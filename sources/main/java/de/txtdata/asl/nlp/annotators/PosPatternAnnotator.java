@@ -56,9 +56,9 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
     protected List<Annotation> createAnnotations(RecursiveDictionaryMatch<DictionaryEntry> match, TextUnit textPiece, int start, int end){
         List<Annotation> results = new ArrayList<>();
         for (DictionaryEntry entry : match.dictionary.meanings){
-            int startPos = textPiece.getWords().get(start).starts;
-            int endPos = textPiece.getWords().get(end).ends;
-            String surface = textPiece.getTextSurface(startPos, endPos);
+            int startPos = textPiece.getWords().get(start).getStarts();
+            int endPos = textPiece.getWords().get(end).getEnds();
+            String surface = textPiece.getSurfaceText(startPos, endPos);
             Span span = new Span(surface,startPos,endPos);
             DictionaryMatch dm = new DictionaryMatch(entry);
             dm.matches = match.matches;
@@ -74,7 +74,7 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
         Set<String> keys = dictionary.map.keySet();
         for (String posPattern : keys){
             if (this.matches(word, posPattern)){
-                RecursiveDictionaryMatch dm = new RecursiveDictionaryMatch(dictionary.map.get(posPattern), word.surface, posPattern);
+                RecursiveDictionaryMatch dm = new RecursiveDictionaryMatch(dictionary.map.get(posPattern), word.getSurface(), posPattern);
                 results.add(dm);
             }
             results.addAll(this.wildCardMatches(word, posPattern, dictionary));
@@ -87,23 +87,23 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
         if (posPattern.equals("")) return false;
         List<String> parts = Arrays.asList(posPattern.split(DIVIDER));
         if (parts.size()>=1){
-            String surface = word.surface;
+            String surface = word.getSurface();
             if (this.ignoreCase)  surface = surface.toLowerCase();
             boolean b = partEquals(surface, parts.get(0));
             if (!b) return false;
         }
-        if (parts.size()>=2 && !(word.root==null && parts.get(1).equals(""))){
-            boolean b = partEquals(word.root, parts.get(1));
+        if (parts.size()>=2 && !(word.getRoot()==null && parts.get(1).equals(""))){
+            boolean b = partEquals(word.getRoot(), parts.get(1));
             if (!b) return false;
         }
         if (parts.size()>=3){
-            boolean b = partEquals(word.pos, parts.get(2));
+            boolean b = partEquals(word.getPos(), parts.get(2));
             if (!b) return false;
         }
         if (parts.size()>=4){
-            if (word.morph==null) return false;
+            if (word.getMorph()==null) return false;
             List<String> ruleMorphs = Arrays.asList(parts.get(3).toLowerCase().split("\\|"));
-            List<String> wordMorphs = Arrays.asList(word.morph.toLowerCase().split("\\|"));
+            List<String> wordMorphs = Arrays.asList(word.getMorph().toLowerCase().split("\\|"));
             for (String ruleMorph : ruleMorphs){
                 if (!wordMorphs.contains(ruleMorph)) return false;
             }
@@ -116,8 +116,8 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
         if(posPattern.equals("*")){
             RecursiveDictionary<DictionaryEntry> rd = new RecursiveDictionary<>();
             rd.map.put("*",dictionary.map.get(posPattern));
-            results.add(new RecursiveDictionaryMatch<DictionaryEntry>(rd, word.surface, posPattern));
-            results.add(new RecursiveDictionaryMatch<DictionaryEntry>(dictionary.map.get(posPattern), word.surface, posPattern));
+            results.add(new RecursiveDictionaryMatch<DictionaryEntry>(rd, word.getSurface(), posPattern));
+            results.add(new RecursiveDictionaryMatch<DictionaryEntry>(dictionary.map.get(posPattern), word.getSurface(), posPattern));
         }else if (posPattern.startsWith("*")){
             try {
                 int b1 = posPattern.indexOf("{");
@@ -130,7 +130,7 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
                     Integer i2 = Integer.parseInt(s2);
 
                     if (i1==1){
-                        results.add(new RecursiveDictionaryMatch<DictionaryEntry>(dictionary.map.get(posPattern), word.surface, posPattern));
+                        results.add(new RecursiveDictionaryMatch<DictionaryEntry>(dictionary.map.get(posPattern), word.getSurface(), posPattern));
                     }
                     if (i1>1){
                         i1--;
@@ -140,7 +140,7 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
                         String newPosPattern = "*{"+i1+","+i2+"}";
                         RecursiveDictionary<DictionaryEntry> rd = new RecursiveDictionary<>();
                         rd.map.put(newPosPattern,dictionary.map.get(posPattern));
-                        results.add(new RecursiveDictionaryMatch<DictionaryEntry>(rd, word.surface, posPattern));
+                        results.add(new RecursiveDictionaryMatch<DictionaryEntry>(rd, word.getSurface(), posPattern));
                     }
 
                 }

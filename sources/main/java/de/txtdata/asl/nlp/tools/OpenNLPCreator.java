@@ -82,9 +82,9 @@ public class OpenNLPCreator extends AbstractCreator {
             words = openNLPTagger.getTaggedWords(spans);
         }else{
             for (Span span : spans){
-                Word word = new Word(span.surface);
-                word.starts = span.starts;
-                word.ends = span.ends;
+                Word word = new Word(span.getSurface());
+                word.setStarts(span.getStarts());
+                word.setEnds(span.getEnds());
                 words.add(word);
             }
         }
@@ -97,8 +97,8 @@ public class OpenNLPCreator extends AbstractCreator {
 
     private void applyOffset(List<Word> words, int offset){
         for (Word word : words){
-            word.starts += offset;
-            word.ends += offset;
+            word.setStarts(word.getStarts()+offset);
+            word.setEnds(word.getEnds()+offset);
         }
     }
 

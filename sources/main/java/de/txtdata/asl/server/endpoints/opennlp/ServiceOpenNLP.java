@@ -69,9 +69,9 @@ public class ServiceOpenNLP {
 
         for (Span s : splitted){
             Sentence sentence = new Sentence();
-            sentence.surface = s.surface;
-            sentence.starts = s.starts;
-            sentence.ends = s.ends;
+            sentence.surface = s.getSurface();
+            sentence.starts = s.getStarts();
+            sentence.ends = s.getEnds();
             result.add(sentence);
             if (tokenize==null || tokenize){
                 sentence.tokens = new ArrayList<>();
@@ -83,12 +83,12 @@ public class ServiceOpenNLP {
                 int i=0;
                 for (Span span : spans) {
                     Token token = new Token();
-                    token.surface = span.surface;
-                    token.starts = sentence.starts + span.starts;
-                    token.ends = sentence.starts + span.ends;
+                    token.surface = span.getSurface();
+                    token.starts = sentence.starts + span.getStarts();
+                    token.ends = sentence.starts + span.getEnds();
                     sentence.tokens.add(token);
                     if (tag==null || tag){
-                        token.tag = words.get(i).pos;
+                        token.tag = words.get(i).getPos();
                     }
                     i++;
                 }

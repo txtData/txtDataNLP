@@ -84,8 +84,8 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
         String surface = "";
         List<String> parts = new ArrayList<>();
         for (Word word : words){
-            surface = surface + word.surface+" ";
-            parts.add(word.surface);
+            surface = surface + word.getSurface()+" ";
+            parts.add(word.getSurface());
         }
         surface = surface.trim();
         String[] array = parts.stream().toArray(n -> new String[n]);
@@ -99,9 +99,9 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
     protected List<Annotation> createAnnotations(RecursiveDictionaryMatch<DictionaryEntry> match, TextUnit textPiece, int start, int end){
         List<Annotation> results = new ArrayList<>();
         for (DictionaryEntry entry : match.dictionary.meanings){
-            int startPos = textPiece.getWords().get(start).starts;
-            int endPos = textPiece.getWords().get(end).ends;
-            String surface = textPiece.getTextSurface(startPos, endPos);
+            int startPos = textPiece.getWords().get(start).getStarts();
+            int endPos = textPiece.getWords().get(end).getEnds();
+            String surface = textPiece.getSurfaceText(startPos, endPos);
             Span span = new Span(surface,startPos,endPos);
             Annotation anno = new Annotation(span, entry);
             results.add(anno);
@@ -112,10 +112,10 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
     @Override
     public List<RecursiveDictionaryMatch<DictionaryEntry>> getMatches(Word word, RecursiveDictionary<DictionaryEntry> dictionary){
         List<RecursiveDictionaryMatch<DictionaryEntry>> results = new ArrayList<>();
-        String surface = word.surface;
+        String surface = word.getSurface();
         if (this.ignoreCase)  surface = surface.toLowerCase();
         RecursiveDictionary<DictionaryEntry> result = dictionary.map.get(surface);
-        RecursiveDictionaryMatch dm = new RecursiveDictionaryMatch(result, word.surface, surface);
+        RecursiveDictionaryMatch dm = new RecursiveDictionaryMatch(result, word.getSurface(), surface);
         if (result!=null) results.add(dm);
         return results;
     }
