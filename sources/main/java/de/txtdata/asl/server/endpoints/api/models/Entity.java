@@ -37,9 +37,9 @@ public class Entity{
         Bag<String> entities = new Bag<>();
         HashMap<String, Annotation> hash = new HashMap<>();
         for (Annotation annotation : annotations){
-            entities.add(annotation.getSurfaceText());
-            if (!hash.containsKey(annotation.getSurfaceText())){
-                hash.put(annotation.getSurfaceText(), annotation);
+            entities.add(annotation.getSurface());
+            if (!hash.containsKey(annotation.getSurface())){
+                hash.put(annotation.getSurface(), annotation);
             }
         }
         List<Entity> entityList = new ArrayList<>();
@@ -55,11 +55,11 @@ public class Entity{
 
     public static Entity fromAnnotation(Annotation annotation, String fieldName) {
         Entity entity = new Entity();
-        entity.surface = annotation.getSurfaceText();
+        entity.surface = annotation.getSurface();
         entity.type = annotation.getType();
         entity.field = fieldName;
-        entity.starts = annotation.getSpan().getStarts();
-        entity.ends = annotation.getSpan().getEnds();
+        entity.starts = annotation.getStarts();
+        entity.ends = annotation.getEnds();
         return entity;
     }
 }

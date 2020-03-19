@@ -115,7 +115,7 @@ public class NGram {
         for (Word word : words){
             stringBuilder.append(word.getSurface());
             if (pos)
-                stringBuilder.append("/").append(word.getPos());
+                stringBuilder.append("/").append(word.getPOS());
             if (tags)
                 stringBuilder.append("/").append(word.getTypes());
             stringBuilder.append(" ");
@@ -206,8 +206,8 @@ public class NGram {
         StringBuffer sb = new StringBuffer();
         for (Word word : words){
             sb.append(word);
-            if (word.getPos()!=null){
-                sb.append("/").append(word.getPos());
+            if (word.getPOS()!=null){
+                sb.append("/").append(word.getPOS());
             }else if (!word.isType(Word.WHITESPACE)){
                 sb.append("/").append("-");
             }

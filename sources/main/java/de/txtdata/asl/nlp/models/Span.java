@@ -129,9 +129,9 @@ public class Span{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Span span = (Span) o;
-        if (getEnds() != span.getEnds()) return false;
-        if (getStarts() != span.getStarts()) return false;
-        if (getSurface() != null ? !getSurface().equals(span.getSurface()) : span.getSurface() != null) return false;
+        if (this.getEnds() != span.getEnds()) return false;
+        if (this.getStarts() != span.getStarts()) return false;
+        if (this.getSurface() != null ? !getSurface().equals(span.getSurface()) : span.getSurface() != null) return false;
         return true;
     }
 

@@ -62,7 +62,7 @@ public class OpenNLPTagger {
             String tag = tagged[j];
             Span span = spans.get(j);
             Word word = new Word(token);
-            word.setPos(tag);
+            word.setPOS(tag);
             word.setStarts(span.getStarts());
             word.setEnds(span.getEnds());
             results.add(word);

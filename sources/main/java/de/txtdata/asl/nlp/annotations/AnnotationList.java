@@ -88,8 +88,8 @@ public class AnnotationList extends ArrayList<Annotation> {
     public AnnotationList getAllAnnotationsBetween(int from, int to){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation : this){
-            if (annotation.getSpan().getStarts() >=from
-                && annotation.getSpan().getEnds() <=to){
+            if (annotation.getStarts() >=from
+                && annotation.getEnds() <=to){
                 result.add(annotation);
 
             }
@@ -100,8 +100,8 @@ public class AnnotationList extends ArrayList<Annotation> {
     public AnnotationList getAnnotationsFromTo(int from, int to){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation : this){
-            if (annotation.getSpan().getStarts() ==from
-                    && annotation.getSpan().getEnds() ==to){
+            if (annotation.getStarts() ==from
+                    && annotation.getEnds() ==to){
                 result.add(annotation);
 
             }
@@ -111,7 +111,7 @@ public class AnnotationList extends ArrayList<Annotation> {
 
     public Annotation getAnnotationFrom(int index){
         for (Annotation annotation : this){
-            if (annotation.getSpan().getStarts() ==index){
+            if (annotation.getStarts() ==index){
                 return annotation;
             }
         }
@@ -121,7 +121,7 @@ public class AnnotationList extends ArrayList<Annotation> {
     public AnnotationList getAnnotationsFrom(int index){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation : this){
-            if (annotation.getSpan().getStarts() ==index){
+            if (annotation.getStarts() ==index){
                 result.add(annotation);
             }
         }
@@ -132,8 +132,8 @@ public class AnnotationList extends ArrayList<Annotation> {
         AnnotationList result = new AnnotationList();
         int bestDiff = -1;
         for (Annotation annotation : this){
-            if (annotation.getSpan().getStarts() >=index){
-                int diff = annotation.getSpan().getStarts() - index;
+            if (annotation.getStarts() >=index){
+                int diff = annotation.getStarts() - index;
                 if (bestDiff==-1){
                     result.add(annotation);
                     bestDiff = diff;
@@ -153,7 +153,7 @@ public class AnnotationList extends ArrayList<Annotation> {
         AnnotationList result = new AnnotationList();
         for (Annotation thisAnno : this){
             if (thisAnno.equals(annotation)) continue;
-            boolean crosses = annotation.getSpan().somehowOverlaps(thisAnno.getSpan());
+            boolean crosses = annotation.somehowOverlaps(thisAnno);
             if (crosses) result.add(thisAnno);
         }
         return result;
@@ -162,7 +162,7 @@ public class AnnotationList extends ArrayList<Annotation> {
     public AnnotationList getCrossingAnnotations(int index){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation : this){
-            if (annotation.getSpan().contains(index)) result.add(annotation);
+            if (annotation.contains(index)) result.add(annotation);
         }
         return result;
     }
@@ -170,8 +170,8 @@ public class AnnotationList extends ArrayList<Annotation> {
     public AnnotationList getLargerAnnotations(Annotation annotation){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation2 : this){
-            if (annotation2.getSpan().getStarts() <= annotation.getSpan().getStarts()
-                    && annotation2.getSpan().getEnds() >= annotation.getSpan().getEnds()) {
+            if (annotation2.getStarts() <= annotation.getStarts()
+                    && annotation2.getEnds() >= annotation.getEnds()) {
                 result.add(annotation2);
             }
         }
@@ -181,8 +181,8 @@ public class AnnotationList extends ArrayList<Annotation> {
     public AnnotationList getLargerAnnotations(int from, int to){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation2 : this){
-            if (annotation2.getSpan().getStarts() <=from
-                    && annotation2.getSpan().getEnds() >=to) {
+            if (annotation2.getStarts() <=from
+                    && annotation2.getEnds() >=to) {
                 result.add(annotation2);
             }
         }
@@ -201,10 +201,10 @@ public class AnnotationList extends ArrayList<Annotation> {
             annotations.remove(0);
             boolean isSubsumed = false;
             for (Annotation compareWith : annotations){
-                if (compareWith.getSpan().includes(annotation.getSpan(),false)){
+                if (compareWith.includes(annotation,false)){
                     isSubsumed = true;
                     break;
-                }else if(annotation.getSpan().includes(compareWith.getSpan(),false)){
+                }else if(annotation.includes(compareWith,false)){
                     if (!subsumed.contains(compareWith)){
                         subsumed.add(compareWith);
                     }

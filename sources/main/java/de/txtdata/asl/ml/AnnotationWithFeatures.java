@@ -14,6 +14,6 @@ public class AnnotationWithFeatures extends Annotation{
     public FeatureBundle featureBundle = new FeatureBundle();
 
     public AnnotationWithFeatures(Annotation annotation){
-        super(annotation.getSpan(), annotation.getAnnotationObject());
+        super(annotation, annotation.getAnnotationObject());
     }
 }

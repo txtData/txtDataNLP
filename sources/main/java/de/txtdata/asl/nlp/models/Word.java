@@ -30,7 +30,7 @@ import java.util.List;
  * Note that this class has fields for start and end positions of the word in a text, however these are not used when
  * computing equality. Two words are equals if their surfaces are equal, there are no other requirements.
  */
-public class Word implements Serializable{
+public class Word extends Span implements Serializable{
 
     public static final String UNSET       = "UNSET";
     public static final String STOPWORD    = "STOP";
@@ -43,14 +43,9 @@ public class Word implements Serializable{
 
     private static String PUNCTUATIONS =  ",.:;-!?#/\"'’«»„“()[]+-•";
 
-
-    private String surface;
     private String root;
     private String pos;
     private String morph;
-
-    private int starts = 0;
-    private int ends = 0;
 
     private List<String> types = new ArrayList<>();
     private Double idf = null;
@@ -58,13 +53,11 @@ public class Word implements Serializable{
 
 
     public Word(String surface){
-        this.setSurface(surface);
+        super(surface,0,0);
     }
 
     public Word(String surface, int starts, int ends){
-        this.setSurface(surface);
-        this.setStarts(starts);
-        this.setEnds(ends);
+        super(surface, starts, ends);
     }
 
     /**
@@ -72,23 +65,12 @@ public class Word implements Serializable{
      * @param toCopy The word object to copy.
      */
     public Word(Word toCopy){
-        this.setSurface(toCopy.getSurface());
+        super(toCopy.getSurface(), toCopy.getStarts(), toCopy.getEnds());
         this.setRoot(toCopy.getRoot());
-        this.setPos(toCopy.getPos());
+        this.setPOS(toCopy.getPOS());
         this.setMorph(toCopy.getMorph());
-        this.setStarts(toCopy.getStarts());
-        this.setEnds(toCopy.getEnds());
         this.setTypes(toCopy.getTypes());
         this.setIdf(toCopy.getIdf());
-    }
-
-
-    public String getSurface() {
-        return surface;
-    }
-
-    public void setSurface(String surface) {
-        this.surface = surface;
     }
 
 
@@ -100,15 +82,13 @@ public class Word implements Serializable{
         this.root = root;
     }
 
-
-    public String getPos() {
+    public String getPOS() {
         return pos;
     }
 
-    public void setPos(String pos) {
+    public void setPOS(String pos) {
         this.pos = pos;
     }
-
 
     public String getMorph() {
         return morph;
@@ -117,25 +97,6 @@ public class Word implements Serializable{
     public void setMorph(String morph) {
         this.morph = morph;
     }
-
-
-    public int getStarts() {
-        return starts;
-    }
-
-    public void setStarts(int starts) {
-        this.starts = starts;
-    }
-
-
-    public int getEnds() {
-        return ends;
-    }
-
-    public void setEnds(int ends) {
-        this.ends = ends;
-    }
-
 
     public List<String> getTypes() {
         return types;
@@ -220,8 +181,8 @@ public class Word implements Serializable{
         if (getRoot() !=null){
             sb.append("/").append(getRoot());
         }
-        if (getPos() !=null){
-            sb.append("/").append(getPos());
+        if (getPOS() !=null){
+            sb.append("/").append(getPOS());
         }
         if (getMorph() !=null) {
             sb.append("/").append(getMorph());
@@ -240,8 +201,8 @@ public class Word implements Serializable{
         if (getRoot() !=null){
             sb.append(PrettyString.create(this.getRoot(),20));
         }
-        if (getPos() !=null){
-            sb.append(PrettyString.create(this.getPos(),10));
+        if (getPOS() !=null){
+            sb.append(PrettyString.create(this.getPOS(),10));
         }
         if (getMorph() !=null){
             sb.append(PrettyString.create(this.getMorph(),20));

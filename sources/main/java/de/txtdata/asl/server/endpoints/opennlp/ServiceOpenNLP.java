@@ -88,7 +88,7 @@ public class ServiceOpenNLP {
                     token.ends = sentence.starts + span.getEnds();
                     sentence.tokens.add(token);
                     if (tag==null || tag){
-                        token.tag = words.get(i).getPos();
+                        token.tag = words.get(i).getPOS();
                     }
                     i++;
                 }

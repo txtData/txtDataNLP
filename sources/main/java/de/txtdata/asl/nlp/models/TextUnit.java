@@ -97,7 +97,7 @@ public class TextUnit{
     }
 
     public List<Word> getWordsForAnnotation(Annotation annotation){
-        return this.getWordsBetween(annotation.getSpan().getStarts(), annotation.getSpan().getEnds());
+        return this.getWordsBetween(annotation.getStarts(), annotation.getEnds());
     }
 
     public List<Word> getWordsBetween(int start, int end){

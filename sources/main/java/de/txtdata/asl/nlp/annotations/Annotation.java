@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2018 Michael Kaisser
+ *  Copyright 2013-2020 Michael Kaisser
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,66 +24,28 @@ import de.txtdata.asl.util.misc.PrettyString;
 /**
  * Model class for an annotation in a text.
  */
-public class Annotation{
+public class Annotation extends Span{
 
-    private Span span;
     private IAnnotationObject annotationObject;
 
-
     public Annotation(Span span, IAnnotationObject annotationObject){
-        this.span = span;
+        super(span.getSurface(), span.getStarts(), span.getEnds());
         this.annotationObject = annotationObject;
     }
 
     public Annotation(String surface, int starts, int ends, IAnnotationObject annotationObject){
-        this.span = new Span(surface,starts,ends);
+        super(surface, starts, ends);
         this.annotationObject = annotationObject;
     }
 
     public Annotation(Span span, String type){
-        this.span = span;
+        super(span.getSurface(), span.getStarts(), span.getEnds());
         this.annotationObject = new SimpleAnnotationObject(type);
     }
 
     public Annotation(String surface, int starts, int ends, String type){
-        this.span = new Span(surface,starts,ends);
+        super(surface, starts, ends);
         this.annotationObject = new SimpleAnnotationObject(type);
-    }
-
-
-    public Span getSpan(){
-        return this.span;
-    }
-
-    public void setSpan(Span span){
-        this.span = span;
-    }
-
-
-    public int getStarts(){
-        return this.span.getStarts();
-    }
-
-    public void setStarts(int starts){
-        this.span.setStarts(starts);
-    }
-
-
-    public int getEnds(){
-        return this.span.getEnds();
-    }
-
-    public void setEnds(int ends){
-        this.span.setEnds(ends);
-    }
-
-
-    public String getSurfaceText(){
-        return this.span.getSurface();
-    }
-
-    public void setSurfaceText(String surface){
-        this.span.setSurface(surface);
     }
 
 
@@ -99,7 +61,6 @@ public class Annotation{
     public IAnnotationObject getAnnotationObject(){
         return this.annotationObject;
     }
-
 
     public String getType(){
         if (this.annotationObject!=null){
@@ -117,20 +78,20 @@ public class Annotation{
 
 
     public boolean equalsSpan(Span toCompare){
-        if (this.span.getEnds() != toCompare.getEnds()) return false;
-        if (this.span.getStarts() != toCompare.getStarts()) return false;
-        if (this.span.getSurface() != null ? !this.span.getSurface().equals(toCompare.getSurface()) : toCompare.getSurface() != null) return false;
+        if (this.getEnds() != toCompare.getEnds()) return false;
+        if (this.getStarts() != toCompare.getStarts()) return false;
+        if (this.getSurface() != null ? !this.getSurface().equals(toCompare.getSurface()) : toCompare.getSurface() != null) return false;
         return true;
     }
 
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("[").append(this.span.getStarts()).append("-").append(this.span.getEnds()).append("] ");
+        sb.append("[").append(this.getStarts()).append("-").append(this.getEnds()).append("] ");
         String span = sb.toString();
         sb = new StringBuilder();
         sb.append(PrettyString.create(span,11));
-        sb.append(" '").append(this.span.getSurface()).append("' ");
+        sb.append(" '").append(this.getSurface()).append("' ");
         if (annotationObject!=null) {
             sb.append(annotationObject.toString());
         }else{
@@ -145,14 +106,14 @@ public class Annotation{
         if (!(o instanceof Annotation)) return false;
         Annotation that = (Annotation) o;
         if (annotationObject != null ? !annotationObject.equals(that.annotationObject) : that.annotationObject != null) return false;
-        if (span != null ? !span.equals(that.span) : that.span != null) return false;
+        if (this.getEnds() != that.getEnds()) return false;
+        if (this.getStarts() != that.getStarts()) return false;
+        if (this.getSurface() != null ? !getSurface().equals(that.getSurface()) : that.getSurface() != null) return false;
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = span != null ? span.hashCode() : 0;
-        result = 31 * result + (annotationObject != null ? annotationObject.hashCode() : 0);
-        return result;
+        return this.toString().hashCode();
     }
 }

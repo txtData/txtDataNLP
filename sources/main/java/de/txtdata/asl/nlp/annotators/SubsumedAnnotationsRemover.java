@@ -51,10 +51,10 @@ public class SubsumedAnnotationsRemover extends AbstractAnnotator {
             annotations.remove(0);
             boolean isSubsumed = false;
             for (Annotation compareWith : annotations){
-                if (compareWith.getSpan().includes(annotation.getSpan(),false)){
+                if (compareWith.includes(annotation,false)){
                     isSubsumed = true;
                     break;
-                }else if(annotation.getSpan().includes(compareWith.getSpan(),false)){
+                }else if(annotation.includes(compareWith,false)){
                     if (!toRemove.contains(compareWith)){
                         toRemove.add(compareWith);
                     }

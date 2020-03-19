@@ -97,7 +97,7 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
             if (!b) return false;
         }
         if (parts.size()>=3){
-            boolean b = partEquals(word.getPos(), parts.get(2));
+            boolean b = partEquals(word.getPOS(), parts.get(2));
             if (!b) return false;
         }
         if (parts.size()>=4){

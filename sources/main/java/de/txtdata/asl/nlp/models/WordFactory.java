@@ -75,7 +75,7 @@ public class WordFactory {
     public Word createWord(String surface, String pos, int starts, int ends){
         Word word = this.createWord(surface, starts, ends);
         if (!word.isType(Word.WHITESPACE)) {
-            word.setPos(pos);
+            word.setPOS(pos);
         }
         return word;
     }
