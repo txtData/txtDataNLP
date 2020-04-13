@@ -1,0 +1,96 @@
+// This file demonstrates how to use whitelists.
+// Whitelists come with a very simple syntax. Essentially words or phrases that should be matched are listed here.
+// Casing can de turned on or off in Java code.
+// Each word listed here has exactly one type and one or more tags. These will be available in Java together with
+// the matched word or phrase.
+// The tag is typically defined at the beginning of a file with the keyword "#type".
+// Tags are defined with "#newtag", all words in the following lines will receive this tag until the next "#newtag".
+// Additional tags for one word or phrase can also be defined at the end of a line using "tag" or "tags".
+
+#type:germanCity
+
+#newtag:Großstadt
+Berlin	#tags:Hauptstadt,Landeshauptstadt
+Hamburg #tag:Landeshauptstadt
+München	#tag:Landeshauptstadt
+Köln 
+Frankfurt am Main #tag:Landeshauptstadt
+Stuttgart #tag:Landeshauptstadt
+Düsseldorf #tag:Landeshauptstadt
+Leipzig 	
+Dortmund 	
+Essen 	
+Bremen 	
+Dresden	#tag:Landeshauptstadt	
+Hannover	#tag:Landeshauptstadt 	
+Nürnberg 	
+Duisburg 	
+Bochum 	
+Wuppertal	
+Bielefeld 	
+Bonn
+Münster	
+Karlsruhe 	
+Mannheim 	
+Augsburg 	
+Wiesbaden #tag:Landeshauptstadt	
+Mönchengladbach
+Gelsenkirchen
+Braunschweig 
+Kiel	#tag:Landeshauptstadt 	
+Aachen
+Chemnitz 
+Halle (Saale)
+Magdeburg	#tag:Landeshauptstadt 	
+Freiburg im Breisgau
+Krefeld
+Lübeck 	
+Mainz	#tag:Landeshauptstadt
+Erfurt	#tag:Landeshauptstadt
+Oberhausen	
+Rostock1 	
+Kassel
+Hagen 	
+Saarbrücken	#tag:Landeshauptstadt
+Hamm 	
+Potsdam #tag:Landeshauptstadt 	
+Ludwigshafen am Rhein
+Mülheim an der Ruhr
+Oldenburg 
+Osnabrück 	
+Leverkusen 	
+Heidelberg 	
+Solingen 	
+Darmstadt 	
+Herne 	
+Neuss 	
+Regensburg 	
+Paderborn 	
+Ingolstadt 	
+Offenbach am Main
+Würzburg 	
+Fürth 
+Ulm	
+Heilbronn 	
+Pforzheim 	
+Wolfsburg 	
+Göttingen 	
+Bottrop 	
+Reutlingen 	
+Koblenz 	
+Bremerhaven
+Recklinghausen
+Bergisch Gladbach
+Erlangen
+Jena 	
+Remscheid 	
+Trier 	
+Salzgitter
+Moers 	
+Siegen 	
+Hildesheim 	
+Cottbus
+Gütersloh
+
+#newtag:Landeshauptstadt
+Schwerin

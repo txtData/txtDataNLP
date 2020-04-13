@@ -35,7 +35,10 @@ import java.util.Set;
 public class PosPatternAnnotator extends WhitelistAnnotator {
 
     private static String DIVIDER = "\\.";      // string is a regex
-    private static String DIVIDER_ESCAPE = "#"; // not a regex, just a plain string.
+    private static String DIVIDER_ESCAPE = "§"; // not a regex, just a plain string.
+
+    private int removeCharactersFromPattern = 1;
+    private int allowAddingCharactersFromPattern = 3;
 
     protected PosPatternAnnotator(){}
 
@@ -45,6 +48,16 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
 
     public PosPatternAnnotator(Language lang, String directory, boolean ignoreCase){
         super(lang, directory, ignoreCase);
+    }
+
+    /**
+     * Allows to adjust how the matching of suffixes with the tilde operator works in detail.
+     * @param removeCharactersFromPattern Number of characters that will be removed from the pattern before matching.
+     * @param allowAddingCharactersFromPattern Number of characters that are allowed to be additionally present at the end of a word.
+     */
+    public void overrideMorphologyMatchingBehavior(int removeCharactersFromPattern, int allowAddingCharactersFromPattern){
+        this.removeCharactersFromPattern = removeCharactersFromPattern;
+        this.allowAddingCharactersFromPattern = allowAddingCharactersFromPattern;
     }
 
     @Override
@@ -93,11 +106,13 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
             if (!b) return false;
         }
         if (parts.size()>=2 && !(word.getRoot()==null && parts.get(1).equals(""))){
-            boolean b = partEquals(word.getRoot(), parts.get(1));
+            String part = parts.get(1);
+            if (this.ignoreCase)  part = part.toLowerCase();
+            boolean b = partEquals(word.getRoot(), part);
             if (!b) return false;
         }
         if (parts.size()>=3){
-            boolean b = partEquals(word.getPOS(), parts.get(2));
+            boolean b = partEquals(word.getPOS().toLowerCase(), parts.get(2).toLowerCase());
             if (!b) return false;
         }
         if (parts.size()>=4){
@@ -185,13 +200,12 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
     }
 
     protected boolean getTildeMatch(String pattern, String text){
-        int morphRemove = 1;
-        int morphAdd = 3;
         text = text.toLowerCase();
         pattern = pattern.toLowerCase();
-        if (pattern.length()>morphRemove) {
-            pattern = pattern.substring(0, pattern.length() - (1 + morphRemove));
-            if (text.startsWith(pattern) && text.length() - pattern.length() < (1 + morphRemove + morphAdd))
+        if (pattern.length()> this.removeCharactersFromPattern) {
+            pattern = pattern.substring(0, pattern.length() - (1 + this.removeCharactersFromPattern));
+            if (text.startsWith(pattern) && text.length() - pattern.length() < (
+                    1 + this.removeCharactersFromPattern + this.allowAddingCharactersFromPattern))
                 return true;
         }
         return false;

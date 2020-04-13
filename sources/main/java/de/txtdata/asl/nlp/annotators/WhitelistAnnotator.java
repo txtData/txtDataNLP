@@ -144,12 +144,6 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
         List<String> tags = new ArrayList<>();
         for (String line : resourceFile.getList()) {
             line = line.trim();
-            String[] parts = line.split("\t");
-            String additionalTag = null;
-            if (parts.length>1){
-                additionalTag = parts[1].trim();
-                line = parts[0].trim();
-            }
             if (line.startsWith(typeIndicator)) {
                 type = line.substring(typeIndicator.length(), line.length()).trim();
             }else if (line.startsWith(tagIndicator)) {
@@ -168,15 +162,31 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
                     tags.add(t.trim());
                 }
             }else if (line.length()>0){
-                parts = line.split(" ");
+                List<String> additionalTags = new ArrayList<>();
+                String[] parts = line.split("(#tag:|#tags:)");
+                if (parts.length>1){
+                    additionalTags = this.getAdditionalTags(line);
+                    line = parts[0].trim();
+                }
+                if (this.ignoreCase) line = line.toLowerCase();
                 DictionaryEntry entry = new DictionaryEntry(line, type);
                 entry.tags = new ArrayList<>();
                 entry.tags.addAll(tags);
-                if (additionalTag!=null){
-                    entry.tags.add(additionalTag);
-                }
+                entry.tags.addAll(additionalTags);
+                parts = line.split(" ");
                 this.completeDictionary.add(parts, entry);
             }
         }
+    }
+
+    private List<String> getAdditionalTags(String line){
+        List<String> tags = new ArrayList<>();
+        String[] parts = line.split("(#tag:|#tags:)");
+        if (parts.length!=2) return tags;
+        String[] tagParts = parts[1].split(",");
+        for (String part : tagParts){
+            tags.add(part.trim());
+        }
+        return tags;
     }
 }

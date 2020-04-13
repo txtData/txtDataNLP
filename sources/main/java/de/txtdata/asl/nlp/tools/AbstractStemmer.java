@@ -10,7 +10,7 @@ package de.txtdata.asl.nlp.tools;
 public abstract class AbstractStemmer {
 
     public abstract String stem(String input);
-    public abstract boolean equals(String a, String b);
+    public abstract boolean stemEquals(String a, String b);
 
 }
     

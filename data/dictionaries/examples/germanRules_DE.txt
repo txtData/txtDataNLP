@@ -1,0 +1,39 @@
+// This file demonstrates how to use POS rules. The syntax used here extends the syntax used in whitelists.
+// Each line matches a word or phrase where for each word the following syntax is used:
+// Dörfer.Dorf.NN
+// The three parts of are separated by ".", the first part matches the word itself, the second part the lemma of the
+// word, the third part matches the POS tag. All parts that are specified need to match for the whole expression to match.
+// If one part is omitted it always matches.
+// Additionally the following expressions can be used in all parts:
+// Städt/ matches any word staring with "Städt", so both "Städte" and "Städtetag"
+// Städt~ matches a limited number of additional characters, 3 in the default implementation.
+//        So "Städt~" matches "Städte" but not "Städtetag". Usually used to capture morphological variation.
+// (Stadt|Dorf) matches either Stadt or Dorf.
+
+#type:germanMeanings
+
+#newtag:village
+Dorf
+Dörf/
+
+#newtag:city
+(Stadt|Städten)
+
+
+#newtag:troll
+Troll~..N/
+
+
+#type:germanWordTypes
+
+#newtag:verb
+..V/
+
+#newtag:preposition
+..(APPR|APPRART)
+
+#newtag:nounphrase
+..N/
+..ART ..N/
+..ADJA ..N/
+..ART ..ADJA ..N/

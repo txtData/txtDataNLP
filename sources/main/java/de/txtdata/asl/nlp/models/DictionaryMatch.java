@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2018 Michael Kaisser
+ *  Copyright 2013-2020 Michael Kaisser
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import de.txtdata.asl.util.dataStructures.KeyValuePairList;
 
 
 /**
- * Representation of an entry in a dictionary, where the parts that matched against a string a stored.
+ * Representation of an entry in a dictionary, together with the parts that matched against the dictionary entry.
  * Implements IAnnotationObject, so that text pieces can be marked with the dictionary questions that they match.
  */
 public class DictionaryMatch extends DictionaryEntry {

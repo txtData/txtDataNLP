@@ -23,4 +23,12 @@ public class FeatureBundle{
         }
         return sb.toString();
     }
+
+    public void addStringFeature(String name, String value){
+        this.stringFeatures.add(name, value);
+    }
+
+    public void addDoubleFeature(String name, Double value){
+        this.doubleFeatures.add(name, value);
+    }
 }

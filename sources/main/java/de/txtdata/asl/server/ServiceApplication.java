@@ -1,6 +1,6 @@
 package de.txtdata.asl.server;
 
-import de.txtdata.asl.nlp.annotators.ChunkerPipeline;
+import de.txtdata.asl.examples.ChunkerPipeline;
 import de.txtdata.asl.nlp.models.Language;
 import de.txtdata.asl.server.endpoints.api.APIService;
 import de.txtdata.asl.server.endpoints.html.HTMLDemo;

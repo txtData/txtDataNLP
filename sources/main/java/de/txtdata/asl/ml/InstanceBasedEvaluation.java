@@ -1,5 +1,5 @@
 /***
- * Copyright 2013-2015 Michael Kaisser
+ * Copyright 2013-2020 Michael Kaisser
  ***/
 
 package de.txtdata.asl.ml;
@@ -54,9 +54,9 @@ public class InstanceBasedEvaluation<T> {
             double tp = truePositives.getValue(element);
             double fp = falsePositives.getValue(element);
             double fn = falseNegatives.getValue(element);
-            double precsion = tp / (tp + fp);
+            double precision = tp / (tp + fp);
             double recall   = tp / (tp + fn);
-            String pString = "P: "+ PrettyString.create(precsion, 1, 3);
+            String pString = "P: "+ PrettyString.create(precision, 1, 3);
             String rString = "R: "+ PrettyString.create(recall,1,3);
 
             if ((tp+fp)==0) pString = "P:   ---";

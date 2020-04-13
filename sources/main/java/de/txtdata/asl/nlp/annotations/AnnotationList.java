@@ -85,7 +85,7 @@ public class AnnotationList extends ArrayList<Annotation> {
         return result;
     }
 
-    public AnnotationList getAllAnnotationsBetween(int from, int to){
+    public AnnotationList getAnnotationsBetween(int from, int to){
         AnnotationList result = new AnnotationList();
         for (Annotation annotation : this){
             if (annotation.getStarts() >=from
