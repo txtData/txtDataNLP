@@ -70,7 +70,6 @@ public class WordFactory {
         if (w2.getTypes()!=null && !w2.getTypes().isEmpty()){
             word.setTypes(w2.getTypes());
         }
-        word.setIdf(w2.getIdf());
         word.setRoot(w2.getRoot());
     }
 
@@ -148,8 +147,6 @@ public class WordFactory {
                 }
             }
             FrequentWordList.FrequentWord fw = frequentWordList.lookUp(lookUp);
-            if (fw==null) word.setIdf(frequentWordList.getIDFApproximation(0));
-            else word.setIdf(fw.getIDFApproximation());
         }
         if (stemmer!=null){
             word.setRoot(stemmer.stem(surface));
