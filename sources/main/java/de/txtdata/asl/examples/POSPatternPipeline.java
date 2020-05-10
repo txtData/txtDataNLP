@@ -10,7 +10,6 @@ import de.txtdata.asl.nlp.models.Word;
 import de.txtdata.asl.nlp.tools.OpenNLPSentenceSplitter;
 import de.txtdata.asl.nlp.tools.OpenNLPTagger;
 import de.txtdata.asl.nlp.tools.OpenNLPTokenizer;
-
 import java.util.ArrayList;
 import java.util.List;
 

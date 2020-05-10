@@ -2,6 +2,7 @@ package de.txtdata.asl.examples;
 
 import de.txtdata.asl.ml.ARFFStringCreator;
 import de.txtdata.asl.ml.AnnotationWithFeatures;
+import de.txtdata.asl.ml.CSVStringCreator;
 import de.txtdata.asl.nlp.annotations.Annotation;
 import de.txtdata.asl.nlp.annotations.AnnotationList;
 import de.txtdata.asl.nlp.annotators.AbstractCreator;
@@ -34,10 +35,17 @@ public class FeatureExtractor extends AbstractCreator {
         createAnnotationsWithFeatures(analyzedSentence);
         collectFeatures(analyzedSentence);
         String arff = createARRFFileContent(analyzedSentence);
+        String csv = createCSVFileContent(analyzedSentence);
 
+        System.out.println("Sentence analysis:");
         System.out.println(analyzedSentence);
         System.out.println("\n\n");
+        System.out.println("Training data in CSV format:");
+        System.out.println(csv);
+        System.out.println("\n\n");
+        System.out.println("Training data in ARFF format:");
         System.out.println(arff);
+
     }
 
 
@@ -95,6 +103,24 @@ public class FeatureExtractor extends AbstractCreator {
                 addedHeader = true;
             }
             sb.append(arffStringCreator.getARFFLine(true,true)).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private static String createCSVFileContent(TextUnit analyzedSentence){
+        StringBuilder sb = new StringBuilder();
+        AnnotationList nameAnnotations = analyzedSentence.getAnnotations("nameSignatures");
+        boolean addedHeader = false;
+        int i = 0;
+        for (Annotation nameAnnotation : nameAnnotations){
+            AnnotationWithFeatures awf = (AnnotationWithFeatures) nameAnnotation;
+            CSVStringCreator csvStringCreator = new CSVStringCreator(awf.featureBundle);
+            if (!addedHeader){
+                sb.append(csvStringCreator.getCSVHeader("id", true, true)).append("\n");
+                addedHeader = true;
+            }
+            sb.append(csvStringCreator.getCSVLine(i+"", true,true)).append("\n");
+            i++;
         }
         return sb.toString();
     }

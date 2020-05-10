@@ -3,11 +3,9 @@ package de.txtdata.asl.examples;
 import de.txtdata.asl.nlp.annotators.AbstractCreator;
 import de.txtdata.asl.nlp.annotators.WhitelistAnnotator;
 import de.txtdata.asl.nlp.models.Language;
-import de.txtdata.asl.nlp.models.Span;
 import de.txtdata.asl.nlp.models.TextUnit;
 import de.txtdata.asl.nlp.models.Word;
 import de.txtdata.asl.nlp.tools.OpenNLPSentenceSplitter;
-import de.txtdata.asl.nlp.tools.OpenNLPTagger;
 import de.txtdata.asl.nlp.tools.OpenNLPTokenizer;
 
 import java.util.ArrayList;
