@@ -48,7 +48,6 @@ public class Word extends Span implements Serializable{
     private String morph;
 
     private List<String> types = new ArrayList<>();
-    private Double idf = null;
     private KeyValuePairList<String, Object> features = new KeyValuePairList<>();
 
 
@@ -70,7 +69,6 @@ public class Word extends Span implements Serializable{
         this.setPOS(toCopy.getPOS());
         this.setMorph(toCopy.getMorph());
         this.setTypes(toCopy.getTypes());
-        this.setIdf(toCopy.getIdf());
     }
 
 
@@ -125,16 +123,6 @@ public class Word extends Span implements Serializable{
         this.getTypes().add(s);
     }
 
-
-    public Double getIdf() {
-        return idf;
-    }
-
-    public void setIdf(Double idf) {
-        this.idf = idf;
-    }
-
-
     public KeyValuePairList<String, Object> getFeatures(){
         return this.features;
     }
@@ -187,9 +175,6 @@ public class Word extends Span implements Serializable{
         if (getMorph() !=null) {
             sb.append("/").append(getMorph());
         }
-        if (getIdf() !=null && getIdf() !=-1.0) {
-            sb.append("/").append(getIdf());
-        }
         if (getStarts() !=-1 && getEnds() !=-1){
             sb.append(" (").append(getStarts()).append("-").append(getEnds()).append(")");
         }
@@ -213,11 +198,6 @@ public class Word extends Span implements Serializable{
             String fromTo ="("+ getStarts() +"-"+ getEnds() +")";
             sb.append(PrettyString.create(fromTo,12));
         }
-        if (getIdf() !=null && getIdf() !=-1.0) {
-            sb.append(PrettyString.create(this.getIdf(),1,7)).append("  ");
-        }
         return sb.toString();
     }
-
-
 }

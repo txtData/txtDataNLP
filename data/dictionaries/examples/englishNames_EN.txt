@@ -1,0 +1,27 @@
+#type:englishNames
+
+#newtag:firstNames
+Peter
+John
+Bonnie
+
+#newtag:lastNames
+Miller
+Johnson
+Webber
+
+#newtag:titles
+Prof§
+Dr§
+Mr§
+Mrs§
+
+#type:nameSignatures
+
+#newtag:nameSignatures
+..NNP/
+..NNP/ ..NNP/
+..NNP/ ..NNP/ ..NNP/
+..NNP/ ..NNP/ ..NNP/ ..NNP/
+..NNP/ ..NNP/ ..NNP/ ..NNP/ ..NNP/
+
