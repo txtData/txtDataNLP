@@ -27,6 +27,6 @@ package de.txtdata.asl.nlp.annotations;
  * Any details are handled in the implementations.
  */
 public interface IAnnotationObject{
-    public String getType();
-    public void setType(String type);
+    String getType();
+    void setType(String type);
 }
