@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2020 Michael Kaisser
+ *  Copyright 2020 Michael Kaisser
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,6 +37,17 @@ public class TextUnit{
 
     public TextUnit(String surface){
         this.surface = surface;
+    }
+
+    public TextUnit(String surface, List<Word> words){
+        this.surface = surface;
+        this.words = words;
+    }
+
+    public TextUnit(String surface, List<Word> words, AnnotationList annotations){
+        this.surface = surface;
+        this.words = words;
+        this.annotations = annotations;
     }
 
 

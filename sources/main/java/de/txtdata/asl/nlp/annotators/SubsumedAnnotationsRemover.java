@@ -1,3 +1,7 @@
+/***
+ * Copyright 2020 Michael Kaisser
+ ***/
+
 package de.txtdata.asl.nlp.annotators;
 
 import de.txtdata.asl.nlp.annotations.Annotation;

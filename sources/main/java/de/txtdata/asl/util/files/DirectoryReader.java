@@ -1,5 +1,5 @@
 /***
- * Copyright 2013-2015 Michael Kaisser
+ * Copyright 2020 Michael Kaisser
  ***/
 
 package de.txtdata.asl.util.files;

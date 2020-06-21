@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013-2018 Michael Kaisser
+ *  Copyright 2020 Michael Kaisser
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -54,6 +54,10 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
 
     protected WhitelistAnnotator(){}
 
+    public WhitelistAnnotator(Language lang){
+        super(lang);
+    }
+
     public WhitelistAnnotator(Language lang, String dictionariesLocation){
         this(lang, dictionariesLocation, true);
     }
@@ -68,10 +72,6 @@ public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryE
         }else{
             this.readFile(this.dictionariesLocation);
         }
-    }
-
-    public WhitelistAnnotator(Language lang){
-        super(lang);
     }
 
     public WhitelistAnnotator(Language language, RecursiveDictionary<DictionaryEntry> completeDictionary, boolean ignoreCase){
