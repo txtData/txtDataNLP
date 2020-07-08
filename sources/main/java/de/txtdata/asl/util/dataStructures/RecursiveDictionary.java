@@ -23,13 +23,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * FST-inspired dictionary.
+ * Dictionary that keeps entries in a trie-like data structure to facilitate fast lookup.
  */
 public class RecursiveDictionary<T>{
 
     public LinkedHashMap<String, RecursiveDictionary<T>> map = new LinkedHashMap<>();
     public List<T> meanings = new ArrayList<>();
     public RecursiveDictionary before = null;
+
 
     public RecursiveDictionary(){
     }

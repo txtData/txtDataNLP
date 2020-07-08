@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Collection of helper methods, that assist dealing with lists of annotations.
- * In particular, the methods here help to retrieve a set of annotations with specified properties.
+ * Collection of helper methods for handling lists of annotations,
+ * many of which deal with retrieving annotations that have specific properties.
  */
 public class AnnotationList extends ArrayList<Annotation> {
 
     /**
-     * Constructor. Creates an empty annotation list.
+     * Constructor. Creates a new, empty annotation list.
      */
     public AnnotationList(){
         super();
