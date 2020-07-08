@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Representation of an entry in a dictionary.
- * Implements IAnnotationObject, so that text pieces can be marked with the dictionary questions that they match.
+ * Implements IAnnotationObject, so that text units can be marked with the dictionary entries that they match.
  */
 public class DictionaryEntry implements IAnnotationObject {
 

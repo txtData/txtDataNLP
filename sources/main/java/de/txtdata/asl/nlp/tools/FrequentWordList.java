@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 /**
  * Reads a list of words from a file, together with their absolute frequencies derived from a corpus.
- * Allows querying for this frequency information.
+ * Allows querying this frequency information.
  */
 public class FrequentWordList{
 

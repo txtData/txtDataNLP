@@ -22,10 +22,10 @@ import de.txtdata.asl.nlp.models.Language;
 import de.txtdata.asl.nlp.models.TextUnit;
 
 /**
- * Abstract class for an 'Annotator'. An Annotator analyses a piece of text and detects parts of this text that have
- * a meaning, or are in any other way special. It marks these by creating annotations.
- * It needs text that is preprocessed and comes in form of a TextUnit. It is however up to the
- * implementation of the annotators which functionality of TextUnit it uses.
+ * Abstract class for an 'Annotator'. An Annotator analyses a piece of text and detects parts that carry
+ * a meaning, or are in any other way special. It marks these parts by creating annotations.
+ * Annotators work on text that is preprocessed and available in form of a TextUnit.
+ * It is up to the implementation of the annotators which functionality of a TextUnit it uses.
  */
 public abstract class AbstractAnnotator {
 

@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Data structure to keeps counts (or scores) of entities.
+ * Data structure that keeps counts (or scores) of entities:
  * Each time an item is added, it is checked whether this item was added before.
- * If not, it is added with count 1.0; if yes, this items' count is increased by 1.0.
+ * If not, it is added with count 1.0; if yes, this item's count is increased by 1.0.
  * This class is also useful for various ranking, scoring and sorting tasks.
  *
  * @param <T> The entity that should be counted.
@@ -144,7 +144,7 @@ public class Bag<T> implements Serializable{
 	/**
 	 * Add the contents of a list.
 	 * @param list The list that should be added.
-	 * @param value The list questions will be added with this value.
+	 * @param value The list's entries will be added with this value.
 	 */
 	public void addList(List<T> list, double value){
         for (T item : list) {
@@ -226,7 +226,7 @@ public class Bag<T> implements Serializable{
 	}
 
 	/**
-	 * Returns the questions as a sorted list, highest first.
+	 * Returns the entries as a sorted list, highest first.
      * Note that behavior for NaN is undefined, NaNs might end up at the top of the list.
 	 */
 	public List<T> getAsSortedList(){

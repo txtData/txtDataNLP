@@ -12,7 +12,7 @@ import java.util.List;
 
 
 /**
- * Helper class to read in a file, line by line or all at once.
+ * Helper class to read a file; either line by line or all at once.
  */
 public class LineReader {
 

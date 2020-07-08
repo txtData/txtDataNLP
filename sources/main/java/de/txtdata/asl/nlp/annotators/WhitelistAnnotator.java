@@ -34,10 +34,10 @@ import de.txtdata.asl.util.dataStructures.RecursiveDictionary;
 import de.txtdata.asl.util.files.ResourceFile;
 
 /**
- * This annotators reads in dictionary files contained in a given directory, matches input texts against the
- * dictionary questions, and creates annotations for any text that matches these dictionary questions.
- * If getMatches() is not overridden equality between input text and dictionary questions are computed via strict string
- * equality.
+ * Annotator that reads dictionary files contained in a specified directory, matches input texts against the
+ * dictionary entries and creates annotations for any text that matches them.
+ * If getMatches() is not overridden, the equality between input text and dictionary entries is computed via
+ * strict string equality.
  */
 public class WhitelistAnnotator extends RecursiveDictionaryAnnotator<DictionaryEntry> {
 

@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents an NGram: a continuous sequence of words from a sample text.
+ */
 public class NGram {
 
     protected List<Word> words;

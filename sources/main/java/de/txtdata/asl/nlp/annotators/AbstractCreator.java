@@ -22,8 +22,8 @@ import de.txtdata.asl.nlp.models.Language;
 import de.txtdata.asl.nlp.models.TextUnit;
 
 /**
- * A Creator is a special type of Annotator that also has the ability to start an annotation process directly
- * from an unprocessed text string.
+ * A Creator is a special type of Annotator that has the additional ability to start an annotation process directly
+ * from a text string.
  */
 public abstract class AbstractCreator extends AbstractAnnotator {
 

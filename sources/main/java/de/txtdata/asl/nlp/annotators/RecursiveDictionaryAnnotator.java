@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract implementation of a fairly fast algorithm to match (many) dictionary questions against input text,
- * somewhat inspired by a Finite State Transducer.
+ * Abstract implementation of a fairly fast algorithm to match (many) dictionary entries against input text, which in
+ * many ways resembles a trie.
  * All dictionaries are kept in memory, so if the dictionaries become very large, this isn't the right approach.
  * @param <T>
  */
 public abstract class RecursiveDictionaryAnnotator<T> extends AbstractAnnotator {
 
-    // All of the dictionaries.
+    // contains all the dictionaries.
     protected RecursiveDictionary<T> completeDictionary = new RecursiveDictionary<>();
 
     protected RecursiveDictionaryAnnotator(){}

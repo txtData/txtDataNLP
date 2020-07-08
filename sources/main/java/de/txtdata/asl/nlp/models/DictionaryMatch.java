@@ -23,7 +23,7 @@ import de.txtdata.asl.util.dataStructures.KeyValuePairList;
 
 /**
  * Representation of an entry in a dictionary, together with the parts that matched against the dictionary entry.
- * Implements IAnnotationObject, so that text pieces can be marked with the dictionary questions that they match.
+ * Implements IAnnotationObject, so that text pieces can be marked with the dictionary entries that they match.
  */
 public class DictionaryMatch extends DictionaryEntry {
 

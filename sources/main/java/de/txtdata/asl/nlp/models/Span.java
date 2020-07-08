@@ -20,7 +20,8 @@ package de.txtdata.asl.nlp.models;
 
 /*
  * Representation for a region in a text.
- * Please note: A Span has no meaning attached to it. If a text span is supposed to carry meaning, use annotation.
+ * Please note: A Span has no meaning attached to it. If a text span is supposed to carry a meaning, use the
+ * Annotation class.
  */
 public class Span{
     private String surface;

@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Model class for a piece of text, its words and any annotations that belong to it.
- * Typically, this class is used to represent a sentence, although other use cases are possible.
+ * Often, this class is used to represent a sentence, although other use cases are possible.
  */
 public class TextUnit{
 

@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Representation for a word.
  * Note that this class has fields for start and end positions of the word in a text, however these are not used when
- * computing equality. Two words are equals if their surfaces are equal, there are no other requirements.
+ * computing equality. The only requirement for two words to be equal is that their surfaces are equal.
  */
 public class Word extends Span implements Serializable{
 

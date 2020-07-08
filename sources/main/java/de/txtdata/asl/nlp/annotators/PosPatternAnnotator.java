@@ -168,7 +168,7 @@ public class PosPatternAnnotator extends WhitelistAnnotator {
 
     /**
      * @param token The actual user text and its linguistic analysis
-     * @param patternPart What's found in the dictionary file
+     * @param patternPart The dictionary entry
      * @return true if match, false otherwise
      */
     private boolean partEquals(String token, String patternPart){
