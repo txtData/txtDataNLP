@@ -35,7 +35,7 @@ public class HTMLDemo {
 
     public String defaultString = "He lives in Berlin and she in New York City, but she used to live in Berlin too.";
 
-    public String htmlFile = "./sources/main/html/view.html";
+    public String htmlFile = "./src/main/html/view.html";
     public String replaceTable = "<!--TABLE-->";
     public String replaceText = "<!--TEXT-->";
 
