@@ -20,6 +20,7 @@ package de.txtdata.asl.nlp.models;
 
 import de.txtdata.asl.nlp.annotations.Annotation;
 import de.txtdata.asl.nlp.annotations.AnnotationList;
+import de.txtdata.asl.nlp.annotations.IAnnotationObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,6 +147,10 @@ public class TextUnit{
 
     public AnnotationList getAnnotations(String type){
         return this.annotations.getAnnotations(type);
+    }
+
+    public <T extends IAnnotationObject> AnnotationList getAnnotations(Class<T> classOfT){
+        return this.getAnnotations().getAnnotations(classOfT);
     }
 
     public void setAnnotations(List<Annotation> annotations){
