@@ -18,10 +18,12 @@
 
 package de.txtdata.asl.server;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import org.hibernate.validator.constraints.NotEmpty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceConfiguration extends Configuration {
     @NotEmpty
     private String serviceName;
